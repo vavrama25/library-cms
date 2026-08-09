@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Knihovna - Katalog</title>
+    <!-- Zavedení Bootstrap 5 CSS přes CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+    <!-- HORNÍ LIŠTA (Navbar) -->
+    <nav class="navbar navbar-expand-lg bg-white border-bottom shadow-sm sticky-top">
+        <div class="container-fluid px-lg-4">
+            
+            <!-- Levá zóna: Logo a Nadpis -->
+            <a class="navbar-brand fw-bold d-flex align-items-center gap-2 text-dark" href="#">
+                <!-- Jednoduchá SVG ikona knihy místo loga -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-book" viewBox="0 0 16 16">
+                    <path d="M1 2.828c.885-.37 2.154-.769 3.388-.893 1.33-.134 2.458.063 3.112.752v9.746c-.935-.53-2.12-.603-3.213-.493-1.18.12-2.37.461-3.287.811V2.828zm7.5-.141c.654-.689 1.782-.886 3.112-.752 1.234.124 2.503.523 3.388.893v9.923c-.918-.35-2.107-.692-3.287-.81-1.094-.111-2.278-.039-3.213.492V2.687zM8 1.783C7.015.936 5.587.81 4.287.94c-1.514.153-3.042.672-3.994 1.105A.5.5 0 0 0 0 2.5v11a.5.5 0 0 0 .707.455c.882-.4 2.303-.881 3.68-1.02 1.409-.142 2.59.087 3.223.877a.5.5 0 0 0 .78 0c.633-.79 1.814-1.019 3.222-.877 1.378.139 2.8.62 3.681 1.02A.5.5 0 0 0 16 13.5v-11a.5.5 0 0 0-.293-.455c-.952-.433-2.48-.952-3.994-1.105C10.413.809 8.985.936 8 1.783z"/>
+                </svg>
+                Knihovna CMS
+            </a>
+
+            <!-- Mobilní toggle tlačítko -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#hlavniNavigace">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- Střední a Pravá zóna (na mobilu se skryje do menu) -->
+            <div class="collapse navbar-collapse" id="hlavniNavigace">
+                
+                <!-- Střední zóna: Vyhledávač -->
+                <form class="d-flex mx-auto my-3 my-lg-0 w-100" style="max-width: 600px;">
+                    <input class="form-control me-2 bg-light border-secondary-subtle" type="search" placeholder="Hledat knihu, autora, ISBN...">
+                    <button class="btn btn-dark px-4" type="submit">Hledat</button>
+                </form>
+
+                <!-- Pravá zóna: Katalog a Uživatel -->
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
+                    <!-- Dropdown -->
+                    <li class="nav-item dropdown me-lg-3">
+                        <a class="nav-link dropdown-toggle text-dark fw-medium" href="#" role="button" data-bs-toggle="dropdown">
+                            Katalog
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
+                            <li><a class="dropdown-item" href="#">Novinky</a></li>
+                            <li><a class="dropdown-item" href="#">Beletrie</a></li>
+                            <li><a class="dropdown-item" href="#">Odborná literatura</a></li>
+                        </ul>
+                    </li>
+                    <!-- Účet / Login -->
+                    <li class="nav-item d-flex gap-2 mt-2 mt-lg-0">
+                        <a class="btn btn-outline-dark btn-sm px-3" href="#">Přihlásit</a>
+                        <a class="btn btn-dark btn-sm px-3" href="#">Registrovat</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- OBSAHOVÁ ČÁST -->
+    <main class="container py-5">
+        
+        <!-- Uvítací sekce -->
+        <div class="d-flex justify-content-between align-items-end mb-4 border-bottom pb-3">
+            <div>
+                <h1 class="h3 fw-bold mb-1">Dostupné tituly</h1>
+                <p class="text-muted mb-0">Prohlížejte a rezervujte knihy z našeho fondu.</p>
+            </div>
+        </div>
+
+        <!-- Mřížka knih (Grid) -->
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+            
+            <!-- Kniha 1 -->
+            <div class="col">
+                <div class="card h-100 border-0 shadow-sm rounded-3">
+                    <div class="bg-secondary bg-opacity-10 d-flex align-items-center justify-content-center text-muted" style="height: 220px;">
+                        <span>Bez obálky</span>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h2 class="card-title h6 fw-bold mb-1">Základy Architektury</h2>
+                        <p class="card-text text-muted small mb-3">Karel Novák</p>
+                        <div class="mt-auto d-flex justify-content-between align-items-center">
+                            <span class="badge text-bg-success text-white bg-opacity-75">Dostupné (3)</span>
+                            <button class="btn btn-outline-dark btn-sm">Detail</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kniha 2 -->
+            <div class="col">
+                <div class="card h-100 border-0 shadow-sm rounded-3">
+                    <div class="bg-secondary bg-opacity-10 d-flex align-items-center justify-content-center text-muted" style="height: 220px;">
+                        <span>Bez obálky</span>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h2 class="card-title h6 fw-bold mb-1">Úvod do Pythonu</h2>
+                        <p class="card-text text-muted small mb-3">Jana Dvořáková</p>
+                        <div class="mt-auto d-flex justify-content-between align-items-center">
+                            <span class="badge text-bg-danger text-white bg-opacity-75">Vypůjčeno</span>
+                            <button class="btn btn-outline-dark btn-sm">Detail</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kniha 3 -->
+            <div class="col">
+                <div class="card h-100 border-0 shadow-sm rounded-3">
+                    <div class="bg-secondary bg-opacity-10 d-flex align-items-center justify-content-center text-muted" style="height: 220px;">
+                        <span>Bez obálky</span>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h2 class="card-title h6 fw-bold mb-1">Dějiny 20. století</h2>
+                        <p class="card-text text-muted small mb-3">Martin Černý</p>
+                        <div class="mt-auto d-flex justify-content-between align-items-center">
+                            <span class="badge text-bg-success text-white bg-opacity-75">Dostupné (1)</span>
+                            <button class="btn btn-outline-dark btn-sm">Detail</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kniha 4 -->
+            <div class="col">
+                <div class="card h-100 border-0 shadow-sm rounded-3">
+                    <div class="bg-secondary bg-opacity-10 d-flex align-items-center justify-content-center text-muted" style="height: 220px;">
+                        <span>Bez obálky</span>
+                    </div>
+                    <div class="card-body d-flex flex-column">
+                        <h2 class="card-title h6 fw-bold mb-1">Návrhové vzory</h2>
+                        <p class="card-text text-muted small mb-3">Petr Svoboda</p>
+                        <div class="mt-auto d-flex justify-content-between align-items-center">
+                            <span class="badge text-bg-success text-white bg-opacity-75">Dostupné (5)</span>
+                            <button class="btn btn-outline-dark btn-sm">Detail</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Zavedení Bootstrap 5 JS (nutné pro funkčnost dropdownu a mobilního menu) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

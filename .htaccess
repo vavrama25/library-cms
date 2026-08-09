@@ -1,0 +1,6 @@
+RewriteEngine On
+# Pokud soubor nebo složka fyzicky neexistuje...
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+# ...přesměruj vše na index.php a ulož požadovanou cestu do parametru 'url'
+RewriteRule ^(.*)$ index.php?url=$1 [QSA,L]
