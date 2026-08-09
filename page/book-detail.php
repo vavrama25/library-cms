@@ -64,7 +64,7 @@ if (isset($_GET['id']) AND !empty($_GET['id'])) {
                         <div class='flex'>
                             <span class='status-hover-element align-self-center badge text-bg-danger text-white bg-opacity-75'>
                                 <p class='h2'>Nedostupné</p>   
-                                <span class='show-if-element-hoverd'>Omlováme se ale tato položka momentalně není k dispozici</span>   
+                                <small>Omlováme se ale tato položka momentalně není k dispozici</small>   
                             </span>
                             
                             

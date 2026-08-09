@@ -14,16 +14,18 @@ if (isset($_POST['email'], $_POST['password'])) {
             $hash = customHash($password, $email);
             if ($hash == getHash($db, $email)) {
                 $_SESSION[$_COOKIE['PHPSESSID']] = 'logged in';
-                header("Location: ../index.php");           
+                header("Location: " . url('/') . "");           
             } else {
                 header("Location: " . url("/login?smtIsWrong"));
             }   
         } else {
-            header("Location: " . url("/login.php"));
+            header("Location: " . url("/login"));
         }
     } else {
         #email neni to duplikat
-        header("Location: " . url("/login.php"));
+        header("Location: " . url("/login"));
     }
+} else {
+    header("Location: " . url("/login"));
 }
 ?>

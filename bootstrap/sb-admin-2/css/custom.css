@@ -1,10 +1,3 @@
 .logo{
   max-height: 40px; width: auto;
 }
-
-.status-hover-element .show-if-element-hoverd {
-  display: none;
-}
-:hover.status-hover-element + .show-if-element-hoverd {
-  display: block;
-}

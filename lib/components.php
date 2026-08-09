@@ -60,7 +60,7 @@ function publicPageHeader() {
                     <!-- Účet / Login -->
                     '; 
 
-                    if (isset($_SESSION['user']) AND !empty($_SESSION['user'])) {
+                    if (isset($_SESSION['user']) AND !empty($_SESSION['user']) AND isset($_COOKIE['PHPSESSID']) AND $_SESSION[$_COOKIE['PHPSESSID']] !== 'LogedOut') {
                         $userInfo = getUserInfo($_SESSION['user']);
                         echo '
                         <li class="nav-item dropdown">
@@ -69,9 +69,9 @@ function publicPageHeader() {
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end shadow border-0" aria-labelledby="userDropdown">
                                 <li><a class="dropdown-item" href="#">Nastavení</a></li>
-                                <li><a class="dropdown-item" href="#">Historie výpůjček</a></li>
+                                <li><a class="dropdown-item" href="' . url('/history') .'">Historie výpůjček</a></li>
                                 <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item text-danger" href="#" data-bs-toggle="modal" data-bs-target="#logoutModal">Odhlásit se</a></li>
+                                <li><a class=" dropdown-item text-danger" href="' . url('/login?logOut') . '">Odhlásit se</a></li>
                             </ul>
                         </li>
                         <li class="nav-item d-flex gap-2 mt-2 mt-lg-0">
