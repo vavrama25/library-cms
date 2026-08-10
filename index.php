@@ -20,7 +20,7 @@ $routes = [
     '/passwordReset'  => 'public/passwordReset.php',
     '/credits'  => 'page/credits.php',
     '/order'  => 'page/order.php',
-    '/history'  => 'page/loan-history.php',
+    '/history'  => 'page/borrow-history.php',
 ];
 
 // Zpracování cesty

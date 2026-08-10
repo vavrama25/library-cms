@@ -180,4 +180,15 @@ function bookOrder($email, $password, $id) {
 
 }
 
+function getUserBorrowHistory($user_id) {
+    global $db;
+
+    $sql = "SELECT `content_id` FROM `cms-user_orders` WHERE `user_id` = :id;";
+    $con = $db->prepare($sql);
+    $con->bindValue(":id", $user_id, PDO::PARAM_STR);
+    $con->execute();   
+    $data = $con->fetchAll(PDO::FETCH_ASSOC);
+    return($data);
+}
+
 ?>

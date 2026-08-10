@@ -167,3 +167,58 @@ function bookDetailRender($id) {
         echo "</div>";
     }
 }
+
+function listChosenContent($user_id){
+    require_once 'include.php';
+    global $db;
+    $data = getUserBorrowHistory($user_id);
+
+    $borrowedBooks = [];
+
+    foreach ($data as $key => $value) {
+        $sql = "SELECT * FROM `cms-content` WHERE `ID_cms-content` = :id;";
+        $con = $db->prepare($sql);
+        $con->bindValue(":id", $value['content_id'], PDO::PARAM_STR);
+        $con->execute();   
+        $data = $con->fetchAll(PDO::FETCH_ASSOC);
+        $borrowedBooks[] = $data[0];
+    }
+    
+    echo '<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 container-fluid">';
+    foreach ($borrowedBooks as $value) {
+        echo '<div class="col">';
+        foreach ($value as $key => $var) {
+            if ($key == "ID_cms-content") {
+                $id = $var;
+            } elseif ($key == "title") {
+                $title = $var;
+            } elseif ($key == "autor") {
+                $autor = $var;
+            }elseif ($key == "genre") {
+                $genre = $var;
+            } elseif ($key == "imgLink") {
+                $imgLink = $var;
+            } elseif ($key == "description") {
+                $description = $var;
+            }  elseif ($key == "availability") {
+                $availability = $var;
+            }
+
+        }
+    echo "    <div class='card h-100 border-0 shadow-sm rounded-3'>
+                    <div class='bg-secondary bg-opacity-10 d-flex align-items-center justify-content-center text-muted' style='height: 220px;'>
+                        <img class='w-auto h-100 object-fit-cover' src='$imgLink' alt='bookcover'>
+                    </div>
+                    <div class='card-body d-flex flex-column'>
+                        <h2 class='card-title h6 fw-bold mb-1'>$title</h2>
+                        <p class='card-text text-muted small mb-3'>$autor</p>
+                        <div class='mt-auto d-flex justify-content-between align-items-center'>";
+                            if ($availability <= 0) {echo "<span class='badge text-bg-danger text-white bg-opacity-75'>Nedostupné</span>";} else { echo"<span class='badge text-bg-success text-white bg-opacity-75'> Dostupné ($availability)</span>";}
+                            echo "
+                            <a class='btn btn-outline-dark btn-sm' href='"; echo url("/detail?id=$id"); echo "'>Detail</a>
+                        </div>
+                    </div>
+                </div>
+        </div>";
+    }
+}
