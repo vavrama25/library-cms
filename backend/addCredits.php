@@ -12,6 +12,11 @@ if (isset($_COOKIE['PHPSESSID']) AND isset($_SESSION[$_COOKIE['PHPSESSID']]) AND
     header("Location: " . url('/login'));
 }
 
+if ($creditsBought <= 0) {
+    header("Location: " . url('/credits?invalidCreditAmount'));
+    exit();
+}
+
 $userInfo = getUserInfo($user);
 
 $hash = customHash($password, $user);

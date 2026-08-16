@@ -1,6 +1,8 @@
 <?php
+if (!defined('BASE_DIR')) {
+    define('BASE_DIR', dirname(dirname(__FILE__)) . '/');
+}
 
-define('BASE_DIR', dirname(dirname(__FILE__)) . '/');
 
 include_once(BASE_DIR . 'config/db.php');
 include_once(BASE_DIR . 'lib/development.php');

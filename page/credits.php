@@ -97,6 +97,22 @@ echo '
                 </div>
             </div>
 ';
+        } elseif (isset($_GET['invalidCreditAmount'])) {
+echo '
+            <div class="float-left col-xl-5 col-md-6 mt-3 mb-4">
+                <div class="text-center row no-gutters align-items-center">
+                    <div class=" bg-danger rounded p-2 h5 mb-0 font-weight-bold text-gray-800">You inputed invalid credit amount</div>
+                </div>
+            </div>
+';
+        } elseif (isset($_GET['lowOnCredits'])) {
+echo '
+            <div class="float-left col-xl-5 col-md-6 mt-3 mb-4">
+                <div class="text-center row no-gutters align-items-center">
+                    <div class=" bg-danger rounded p-2 h5 mb-0 font-weight-bold text-gray-800">You dont have enough credits buy more</div>
+                </div>
+            </div>
+';
         }
 
         ?>

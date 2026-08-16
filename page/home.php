@@ -11,11 +11,11 @@
     <title>Knihovna</title>
 </head>
 <body >
-    <div id="header">
-        <?php 
-            publicPageHeader(); 
-        ?>
-    </div>
+
+    <?php 
+        publicPageHeader(); 
+    ?>
+
     <main class="container py-5">
         <div id="content">
             <?php 

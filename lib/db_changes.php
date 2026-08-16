@@ -115,6 +115,17 @@ function getUserInfo($user){
     return $data;
 }
 
+function getUserInfoById($user_id) {
+    global $db;
+
+    $sql = "SELECT * FROM `cms-login` WHERE `ID_login` = :user_id";
+    $con = $db->prepare($sql);
+    $con->bindValue(":user_id", $user_id, PDO::PARAM_INT);
+    $con->execute();   
+    $data = $con->fetchAll(PDO::FETCH_ASSOC);
+    return $data; 
+}
+
 function addCredits($user, $creditsBought) {
     global $db;
 
@@ -137,6 +148,24 @@ function checkBookAvailability($id) {
     return($data[0]['availability']);
 }
 
+function creditPay($value_paid, $user_id) {
+    global $db;
+    include "include.php";
+
+    $userInfo = getUserInfoById($user_id);
+
+    if ($value_paid > $userInfo[0]["credits"]) {
+        header("Location:" . url("/credits?lowOnCredits"));
+        exit();
+    }
+
+    $sql ="UPDATE `cms-login` SET `credits`=`credits` - :price WHERE `ID_login` = :id";
+    $con = $db->prepare($sql);
+    $con->bindValue(":price", $value_paid, PDO::PARAM_INT);
+    $con->bindValue(":id", $user_id, PDO::PARAM_STR);
+    $con->execute();
+}
+
 function bookBought($book_id, $email){
     global $db;
     require_once('../lib/include.php'); 
@@ -144,16 +173,14 @@ function bookBought($book_id, $email){
     $userInfo = getUserInfo($email);
     $detail = getBookDetail($book_id);
 
+    creditPay($detail[0]['price'], $userInfo[0]['ID_login']);
+
+
     $sql ="UPDATE `cms-content` SET `availability`=`availability` - 1 WHERE `ID_cms-content` = :id";
     $con = $db->prepare($sql);
     $con->bindValue(":id", $book_id, PDO::PARAM_STR);
     $con->execute();
 
-    $sql ="UPDATE `cms-login` SET `credits`=`credits` - :price WHERE `ID_login` = :id";
-    $con = $db->prepare($sql);
-    $con->bindValue(":price", $detail[0]['price'], PDO::PARAM_INT);
-    $con->bindValue(":id", $userInfo[0]['ID_login'], PDO::PARAM_STR);
-    $con->execute();
 
     $sql = "INSERT INTO `cms-user_orders`(`ID_cms-user_orders`, `user_id`, `content_id`) VALUES (null, :user_id, :content_id)";
     $con = $db->prepare($sql);
@@ -164,7 +191,7 @@ function bookBought($book_id, $email){
 
 function bookOrder($email, $password, $id) {
     global $db;
-    require_once('../lib/include.php'); 
+    include_once('../lib/include.php'); 
 
     $userInfo = getUserInfo($email);
 
@@ -183,12 +210,84 @@ function bookOrder($email, $password, $id) {
 function getUserBorrowHistory($user_id) {
     global $db;
 
-    $sql = "SELECT `content_id` FROM `cms-user_orders` WHERE `user_id` = :id;";
+    $sql = "SELECT * FROM `cms-user_orders` WHERE `user_id` = :id;";
     $con = $db->prepare($sql);
-    $con->bindValue(":id", $user_id, PDO::PARAM_STR);
+    $con->bindValue(":id", $user_id, PDO::PARAM_INT);
     $con->execute();   
     $data = $con->fetchAll(PDO::FETCH_ASSOC);
     return($data);
 }
 
+function getSpecificBorrowedBookById($ID_cms_user_order) {
+    global $db;
+
+    $sql = "SELECT * FROM `cms-user_orders` WHERE `ID_cms-user_orders` = :id;";
+    $con = $db->prepare($sql);
+    $con->bindValue(":id", $ID_cms_user_order, PDO::PARAM_INT);
+    $con->execute();   
+    $data = $con->fetchAll(PDO::FETCH_ASSOC);
+    return($data);
+}
+function getFineValue() {
+    global $db;
+
+    $sql = "SELECT * FROM `cms-settings` WHERE `setting_key` = :key;";
+    $con = $db->prepare($sql);
+    $con->bindValue(":key", 'fine_per_day', PDO::PARAM_STR);
+    $con->execute();   
+    $data = $con->fetchAll(PDO::FETCH_ASSOC);
+    return($data[0]['setting_value']);
+}
+
+function getBorrowDayLimit() {
+    global $db;
+
+    $sql = "SELECT * FROM `cms-settings` WHERE `setting_key` = :key ;";
+    $con = $db->prepare($sql);
+    $con->bindValue(":key", 'borrow_day_limit', PDO::PARAM_STR);
+    $con->execute();   
+    $data = $con->fetchAll(PDO::FETCH_ASSOC);
+    return($data[0]['setting_value']);
+}
+
+function changeBorrowStatus($status, $ID_cms_user_order) {
+    global $db;
+
+    $sql ="UPDATE `cms-user_orders` SET `status`= :status WHERE `ID_cms-user_orders` = :id";
+    $con = $db->prepare($sql);
+    $con->bindValue(":status", $status, PDO::PARAM_STR);
+    $con->bindValue(":id", $ID_cms_user_order, PDO::PARAM_INT);
+    $con->execute();
+}
+
+function getAllFromCmsUserOrders() {
+    global $db;
+
+    $sql = "SELECT * FROM `cms-user_orders`;";
+    $con = $db->prepare($sql);
+    $con->execute();   
+    $data = $con->fetchAll(PDO::FETCH_ASSOC);
+    return($data);
+}
+
+function returnBook($book_id, $user_id, $ID_cms_user_order) {
+    global $db;
+    require_once('../lib/include.php'); 
+    
+    $date = new DateTime();
+    $fineValueSetting = getFineValue();
+    $borrowDaysLimit = getBorrowDayLimit();
+
+    $borrowedBookDetail = getSpecificBorrowedBookById($ID_cms_user_order);
+    $createdDate = new DateTime($borrowedBookDetail[0]['created']);
+    $dueDate = (clone $createdDate)->modify('+' . $borrowDaysLimit . 'day');
+    if ($date > $dueDate) {
+        $daysOverdue = $date->diff($dueDate)->days;
+        $fineValue = $daysOverdue * $fineValueSetting;
+        
+        creditPay($fineValue, $user_id);
+    } 
+    changeBorrowStatus("returned", $borrowedBookDetail[0]['ID_cms-user_orders']);
+
+}
 ?>
