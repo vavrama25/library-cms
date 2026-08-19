@@ -1,12 +1,17 @@
 [
     {
-        "ID_cms-content": 3,
-        "title": "Brána Ivrelu",
-        "autor": "Cherryh, C. J."
-    },
-    {
         "ID_cms-content": 4,
         "title": "Mein kampf",
         "autor": "Adolf Hitler"
+    },
+    {
+        "ID_cms-content": 5,
+        "title": "Bejk",
+        "autor": "Matej Dufek"
+    },
+    {
+        "ID_cms-content": 6,
+        "title": "Hitlerova nenávist k Židům",
+        "autor": "Reuth, Ralf Georg"
     }
 ]

@@ -19,7 +19,7 @@
     <main class="container py-5">
         <div id="content">
             <?php 
-                listAllContent(url('CMS/detail'));
+                listAllContent(false);
             ?>
             
         </div>

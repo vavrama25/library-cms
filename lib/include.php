@@ -15,5 +15,6 @@ include_once(BASE_DIR . 'lib/admin.php');
 include_once(BASE_DIR . 'lib/routing.php');
 include_once(BASE_DIR . 'lib/cms-settings.php');
 include_once(BASE_DIR . 'lib/components.php');
+include_once(BASE_DIR . 'lib/admin-components.php');
 global $db;
 ?>

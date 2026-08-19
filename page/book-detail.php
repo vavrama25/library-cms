@@ -50,10 +50,10 @@ if (isset($_GET['id']) AND !empty($_GET['id'])) {
             </div>
         </div>
         <div class="d-flex flex-row gap-5">
-            <div>
-                <img src="<?php echo $detail[0]['imgLink']; ?>" alt="bookCover">
+            <div  class="book-cover-container float-left">
+                <img class="w-100 h-100 object-fit-cover" src="<?php echo $detail[0]['imgLink']; ?>" alt="bookCover">
             </div>
-            <div>
+            <div class="overflow-hidden flex-grow-1">
                 <div class="mt-3">
                     <p class=" h6 text-muted mb-0"><?php echo $detail[0]['description'] ?></p>
                 </div>

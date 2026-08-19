@@ -95,14 +95,20 @@ echo '
 }
 
 
-function listAllContent($bookDivLink){
+function listAllContent($showAddBookCard){
     global $db;
+    include_once("include.php");
     $sql = "SELECT * FROM `cms-content`";
     $con = $db->prepare($sql);
     $con->execute();
     $data = $con->fetchAll(PDO::FETCH_ASSOC); 
     
     echo '<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 container-fluid">';
+
+    if ($showAddBookCard) {
+        addBookCard();
+    }
+
     foreach ($data as $key => $value) {
         echo '<div class="col">';
         foreach ($value as $key => $var) {

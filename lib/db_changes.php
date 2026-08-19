@@ -270,6 +270,16 @@ function getAllFromCmsUserOrders() {
     return($data);
 }
 
+function AddBookAvailability($count, $book_id) {
+    global $db;
+
+    $sql ="UPDATE `cms-content` SET `availability`= `availability` + :count  WHERE `ID_cms-content` = :id";
+    $con = $db->prepare($sql);
+    $con->bindValue(":count", $count, PDO::PARAM_INT);
+    $con->bindValue(":id", $book_id, PDO::PARAM_INT);
+    $con->execute();
+}
+
 function returnBook($book_id, $user_id, $ID_cms_user_order) {
     global $db;
     require_once('../lib/include.php'); 
@@ -287,7 +297,54 @@ function returnBook($book_id, $user_id, $ID_cms_user_order) {
         
         creditPay($fineValue, $user_id);
     } 
+    AddBookAvailability(1, $book_id);
     changeBorrowStatus("returned", $borrowedBookDetail[0]['ID_cms-user_orders']);
 
+}
+
+function borrowedBooksCount() {
+    global $db;
+
+    $sql = "SELECT COUNT(*) FROM `cms-user_orders` WHERE `status` = 'borrowed';";
+    $con = $db->prepare($sql);
+    $con->execute();   
+    $data = $con->fetchAll(PDO::FETCH_ASSOC);
+    return($data[0]['COUNT(*)']);
+}
+function AllTimeborrowedBooksCount() {
+    global $db;
+
+    $sql = "SELECT COUNT(*) FROM `cms-user_orders`;";
+    $con = $db->prepare($sql);
+    $con->execute();   
+    $data = $con->fetchAll(PDO::FETCH_ASSOC);
+    return($data[0]['COUNT(*)']);
+}
+
+function checkDuplicateContant($autor, $title){
+    global $db;
+
+    $sql = "SELECT COUNT(*) FROM `cms-content` WHERE `title` = :title AND `autor` = :autor";
+    $con = $db->prepare($sql);
+    $con->bindValue(":title", $title, PDO::PARAM_STR);
+    $con->bindValue(":autor", $autor, PDO::PARAM_STR);
+    $con->execute();   
+    $data = $con->fetchAll(PDO::FETCH_ASSOC);
+    return($data[0]["COUNT(*)"]);
+}
+
+function addBookToDb($title, $autor, $genre, $form, $description, $imgUrl, $price) {
+    global $db;
+
+    $sql = "INSERT INTO `cms-content`(`ID_cms-content`, `title`, `autor`, `genre`, `form`, `description`, `imgLink`, `price`) VALUES (null, :title, :autor, :genre, :form, :description, :imgUrl, :price)";
+    $con = $db->prepare($sql);
+    $con->bindValue(":title", $title, PDO::PARAM_STR);
+    $con->bindValue(":autor", $autor, PDO::PARAM_STR);
+    $con->bindValue(":genre", $genre, PDO::PARAM_STR);
+    $con->bindValue(":form", $form, PDO::PARAM_STR);
+    $con->bindValue(":description", $description, PDO::PARAM_STR);
+    $con->bindValue(":imgUrl", $imgUrl, PDO::PARAM_STR);
+    $con->bindValue(":price", $price, PDO::PARAM_INT);
+    $con->execute();
 }
 ?>
