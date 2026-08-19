@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Počítač: 127.0.0.1
--- Vytvořeno: Čtv 06. srp 2026, 17:37
+-- Vytvořeno: Stř 19. srp 2026, 12:23
 -- Verze serveru: 10.4.24-MariaDB
 -- Verze PHP: 8.1.4
 
@@ -35,7 +35,7 @@ CREATE TABLE `cms-content` (
   `form` set('beletrie','naucna') NOT NULL,
   `imgLink` varchar(150) DEFAULT NULL,
   `description` varchar(1000) NOT NULL,
-  `availability` tinyint(1) NOT NULL DEFAULT 0,
+  `availability` tinyint(1) NOT NULL DEFAULT 1,
   `price` int(11) NOT NULL,
   `timestamp` timestamp NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -45,8 +45,9 @@ CREATE TABLE `cms-content` (
 --
 
 INSERT INTO `cms-content` (`ID_cms-content`, `title`, `autor`, `genre`, `form`, `imgLink`, `description`, `availability`, `price`, `timestamp`) VALUES
-(3, 'Brána Ivrelu', 'Cherryh, C. J.', 'sci-fi & fantasy', 'beletrie', 'https://web2.mlp.cz/koweb/00/05/25/82/Small.58.jpg', 'Brány kdysi dávno zaniklé civilizace spojují stovky světů. Tajemná Morgaine mezi nimi putuje s jediným cílem: zničit je, než způsobí zánik samotného času a prostoru. Vánje je čestný muž, ale také bratrovrah a vyvrhel. Kromě jisté smrti mu zbývá už jen marná naděje, že si ho některý z lordů vybere do svých služeb jako svého ilina, válečníka vázaného naprostou poslušností. Když narazí na Morgaine, okamžitě pochopí, že se po stovce let vrátila kdysi uctívaná, ale dnes proklínaná legenda. Příliš pozdě si uvědomí, že tahle krásná a nebezpečná žena má stále právo stát se jeho iljó – paní, jíž se musí zcela odevzdat. Prosby nepomáhají. Morgaine je stejně nemilosrdná, jak to o ní tvrdí pověsti, a Vánju a jeho meč potřebuje. Nic jiného jí totiž nezbývá, protože brána Ivrelu musí být zničena... Nakladatelská anotace.', 0, 499, '2026-07-11 10:43:48'),
-(4, 'Mein kampf', 'Adolf Hitler', 'autobiografie', 'naucna', 'https://web2.mlp.cz/koweb/00/03/44/02/Small.43.jpg', 'Hitler zde rovněž zachycuje své životní osudy a počátky politické kariéry. Text vychází s předmluvou Tomáše Sokola.', 2, 555, '2026-07-11 10:39:50');
+(4, 'Mein kampf', 'Adolf Hitler', 'autobiografie', 'naucna', 'https://web2.mlp.cz/koweb/00/03/44/02/Small.43.jpg', 'Kniha francouzského novináře a dokumentaristy Antoina Vitkina Mein Kampf se snaží popsat vznik a následnou recepci Hitlerova spisu. Vitkine svou knihu rozdělil do dvou částí. V první – Před válkou: „Nacistická bible“ – líčí okolnosti vzniku Mein Kampfu, shrnuje jeho základní teze a popisuje, jaký význam tato kniha získala za Třetí říše. V druhé části knihy – Po válce: Historie bez konce – Vitkine popisuje jednak to, jak se s dědictvím Mého boje vyrovnávali jednotlivé generace v poválečném Německu, jednak jeho další osudy ve světě (do kolika jazyků byl přeložen, v jakých nákladech atd.). Vitkine se zvlášť zaměřuje na arabský svět, v němž se Mému boji po založení státu Izrael dostalo velkého ohlasu. Monografie končí výčtem sedmi ponaučení pro současnost, jaké bychom si z této nebezpečné knihy měli stále brát. Nakladatelská anotace.', 0, 555, '2026-07-11 10:39:50'),
+(5, 'Bejk', 'Matej Dufek', 'SCIFI', 'naucna', 'https://cdn.pixabay.com/photo/2023/10/18/10/31/bull-8323682_960_720.jpg 1x, https://cdn.pixabay.com/photo/2023/10/18/10/31/bull-8323682_1280.jpg ', 'BEJK', 1, 500, '2026-08-18 15:37:50'),
+(6, 'Hitlerova nenávist k Židům', 'Reuth, Ralf Georg', '-', 'beletrie', 'https://web2.mlp.cz/koweb/00/03/56/68/Small.44.jpg', 'Německý historik se ve své práci snaží zpochybnit historiky (Kershaw, Fest, Bullock atd.) zastávaný názor, že počátky Hitlerovy nenávisti vůči Židům spadají do doby jeho pobytu ve Vídni před první světovou válkou. Na základě pramenů a literatury se autor snaží dokázat, že Hitlerův antisemitismus se zrodil až během událostí roku 1919; v tomto roce čelí Německo spartakovskému povstání, v Mnichově je vyhlášena Bavorská republika rad (trvala od dubna do května 1919) a Němci jsou nuceni přijmout tvrdé podmínky versailleské mírové smlouvy. Hitler podle Reutha vidí úzkou spojitost mezi Židy a bolševiky, k nimž cítí bytostný odpor. Kniha mapuje vývoj Hitlerova postoje k Židům od jeho pobytu ve Vídni až do jeho rozhodnutí k provedení genocidy evropských Židů roku 1941.', 1, 500, '2026-08-18 15:52:09');
 
 -- --------------------------------------------------------
 
@@ -79,7 +80,7 @@ INSERT INTO `cms-login` (`ID_login`, `email`, `password`, `deleted`, `role`, `cr
 (16, 'del_1781111274_vavrama25@sps-prosek.cz', 'ca82da7073d99f9d00b40c29a6e1efc5fc007f0aa01b85b77adcb6d359bceb034e3ebf69602e15720b3cdc433aaa4da632782c1fb0c903642e31cefa892', 1, 'user', NULL),
 (17, 'del_2026-06-10T17:11:31+00:00_vavrama25@sps-prosek.cz', 'e901c5a7ea5dc7f8dd391ef1ae6ca877197f5291016b886299cd0313df618f3963d1b5c58e7a4b1f9597c64c505b4de4be51cc32536cda219149a045858', 1, 'user', NULL),
 (18, 'del_2026-06-10_vavrama25@sps-prosek.cz', 'ef7fe00e267045c6ab61ca4050ccd4cfdffa2f88547dcb9078959f525fe4719b5839dab2b5fc6e63d91ce554166d3a352057cc024390cdd8db44f7b0f80', 1, 'user', NULL),
-(19, 'vavrama25@sps-prosek.cz', 'e901c5a7ea5dc7f8dd391ef1ae6ca877197f5291016b886299cd0313df618f3963d1b5c58e7a4b1f9597c64c505b4de4be51cc32536cda219149a045858', 0, 'admin', 100),
+(19, 'vavrama25@sps-prosek.cz', '562295e360186dd00b6c474975a3c6735f64eddaa36b2449405eb4c4b94c5a31ac391a5c7f818ef40d14b2b0603155c0d90ccdeef87824e2f2383ce487e', 0, 'admin', 145),
 (20, 'vavrama25@sps-prosek.czff', 'e02dd6c42ddbe8b63f8320746b76a5717e3d0d892c66799f0bc5edc295d052861182787479718ee4a0ee3e7afa093033dcfcea3e1c7fa6e98a5b67d2002', 0, 'user', NULL),
 (21, 'b@b.b', '0da2a8e7e47cff715e97641e8a05b619a0c13e95832665adeaab5c7e671e7dc646491f2f4b447e08e5467a02e2f1ab51fda11e207bcf35c9611ebef60f0', 0, 'user', NULL),
 (22, 'a@a.a', 'f905e8f3092680fecfc1d3970a0fbfaea1af1f11aeb85dfaec1e3db892a1ea9c5a59ab04ebeab966a074cf455c3cb67a55e826952115fe76e329ddd85dc', 0, 'user', NULL),
@@ -136,7 +137,7 @@ ALTER TABLE `cms-reset_pass`
 -- AUTO_INCREMENT pro tabulku `cms-content`
 --
 ALTER TABLE `cms-content`
-  MODIFY `ID_cms-content` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `ID_cms-content` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT pro tabulku `cms-login`
