@@ -10,6 +10,11 @@ if (isset($_COOKIE['PHPSESSID']) AND isset($_SESSION[$_COOKIE['PHPSESSID']]) AND
     exit();
 }
 
+if (isset($_GET['add']) && isset($_POST['count'])) {
+    AddBookAvailability($_POST['count'], $_GET['add']);
+    header("Location: " . url('/admin/books-manager'));
+    exit();
+}
 $_SESSION['form_data'] = $_POST;
 
 if (
@@ -53,14 +58,26 @@ if ($price === false || $price < 0 || $price > 999999) {
 }
 
 $booksCount = checkDuplicateContant($autor, $bookTitle);
-
-if ($booksCount > 0) {
-    header("Location: " . url('/admin/addBook&error=BookDuplicate'));
-    exit();
+if (!isset($_GET['edit'])) {
+    if ($booksCount > 0) {
+        header("Location: " . url('/admin/addBook&error=BookDuplicate'));
+        exit();
+    }
+} else {
+    if ($booksCount > 0) {
+        header("Location: " . url('/admin/books-manager'));
+        exit();
+    }   
 }
 
-addBookToDb($bookTitle, $autor, $genre, $form, $description, $imgUrl, $price);
+if (isset($_GET['edit'])) {
+    editBookInDb($bookTitle, $autor, $genre, $form, $description, $imgUrl, $price, $_GET['edit']);
 
-header("Location: " . url('/'));
+} else {
+    addBookToDb($bookTitle, $autor, $genre, $form, $description, $imgUrl, $price);
+}
+
+
+header("Location: " . url('/admin/books-manager'));
 
 ?>

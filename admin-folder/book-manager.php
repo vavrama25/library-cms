@@ -51,7 +51,7 @@ if (isset($_COOKIE['PHPSESSID']) AND isset($_SESSION[$_COOKIE['PHPSESSID']]) AND
             <div id="content">
 
                <?php topbarRender($user); ?>
-               <?php listAllContent(true); ?>
+               <?php listAllContentAdmin(true); ?>
 
 
             </div>

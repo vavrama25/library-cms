@@ -1,6 +1,6 @@
 <?php
 session_start();
-include_once("lib/include.php");
+include_once("../lib/include.php");
 loginCheck();
 checkInactivity();
 
@@ -31,7 +31,7 @@ checkInactivity();
         echo "<p class='error'>Deletation was not succesfull</p>";
     } 
     else {
-        header("Location: login.php");
+        header("Location: " . url("/login"));
     }
 ?>      
 <a href="accSettings">back</a>

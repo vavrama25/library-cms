@@ -12,6 +12,7 @@ $routes = [
     '/admin'       => 'admin-folder/admin-home.php',
     '/admin/books-manager'       => 'admin-folder/book-manager.php',
     '/admin/addBook'       => 'admin-folder/addBook.php',
+    '/admin/readers'       => 'admin-folder/readers.php',
     '/login'   => 'public/login.php',
     '/register'  => 'public/register.php',
     '/cantLogIn'  => 'public/cantLogIn.php',

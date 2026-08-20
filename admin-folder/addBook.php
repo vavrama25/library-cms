@@ -49,7 +49,17 @@ if (isset($_COOKIE['PHPSESSID']) AND isset($_SESSION[$_COOKIE['PHPSESSID']]) AND
             <div id="content">
 
             <?php topbarRender($user); ?>
-            <?php addBookForm(); ?>
+            <?php 
+            if (isset($_GET['edit'])) {
+                $book_id = $_GET['edit'];
+                editBookForm($book_id);
+            } else {
+                addBookForm(); 
+            }
+
+
+            ?>
+
             </div>
         
 

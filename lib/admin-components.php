@@ -37,7 +37,7 @@ function sidebarRendrer($active) {
 
             <!-- Nav Item - Readers -->
             <li class="nav-item '; if($active == "readers") {echo 'active';} echo ' ">
-                <a class="nav-link" href="readers.php">
+                <a class="nav-link" href="' . url("/admin/readers") . '">
                     <i class="fas fa-fw fa-table"></i>
                     <span>Readers</span></a>
             </li>
@@ -283,10 +283,162 @@ function listAllContentAdmin($showAddBookCard){
                         <div class='mt-auto d-flex justify-content-between align-items-center'>";
                             if ($availability <= 0) {echo "<span class='badge text-bg-danger text-white bg-opacity-75'>Nedostupné</span>";} else { echo"<span class='badge text-bg-success text-white bg-opacity-75'> Dostupné ($availability)</span>";}
                             echo "
-                            <a class='btn btn-outline-dark btn-sm' href='"; echo url("/addBook?edit=$id"); echo "'>Upravit</a>
+                            <a class='btn btn-outline-dark btn-sm' href='"; echo url("/admin/addBook?edit=$id"); echo "'>Upravit</a>
+                        </div>
+                        <div class=' mt-auto d-flex justify-content-between align-items-center'>
+                            <form class='mt-2 w-100' action='" . url("/backend/addBook-process.php?add=$id") . "' method='post'>
+                                <label for='available' class='form-label small fw-bold mb-1 d-block text-start'>Přidat/odebrat:</label>    
+
+                                <div class='input-group input-group-sm w-50'>
+                                    <input value='";echo  $prefillValues['price'] ?? ''; echo "'  maxlenght='11' type='number' id='count' name='count' class='form-control w-25' placeholder='$availability'>      
+                                    <button class='btn btn-outline-dark btn-sm px-3 bg-success ' type='submit' >Add</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
         </div>";
+    }
+}
+
+function editBookForm($book_id) {
+
+    $bookDetails = getBookDetail($book_id);
+    $prefillValues = $bookDetails[0];
+
+    $selectedBeletrie = (($prefillValues['forma'] ?? '') === 'beletrie') ? 'selected' : '';
+    $selectedNaucna = (($prefillValues['forma'] ?? '') === 'naucna') ? 'selected' : '';
+
+    unset($_SESSION['form_data']);
+
+    echo '   
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 container-fluid">
+            <div class="card h-100 border-0 shadow-sm rounded-3 d-none" id="cardWrapper">
+                <div class="bg-secondary bg-opacity-10 d-flex align-items-center justify-content-center text-muted" style="height: 220px;">
+                    <img class="w-auto h-100 object-fit-cover" src="" id="img" alt="bookcover">
+                </div>
+                <div class="card-body d-flex flex-column">
+                    <h2 class="card-title h6 fw-bold mb-1" id="title"></h2>
+                    <p class="card-text text-muted small mb-3" id="autor"></p>
+                </div>
+            </div>
+        
+            <div class="col-md-3">
+                <form action="' . url("/backend/addBook-process.php?edit=$book_id") . '" method="post">
+                    <label for="bookTitle" class="form-label font-weight-bold">Jméno knihy:</label>    
+                    <input value="';echo  $prefillValues['title'] ?? ''; echo '"maxlenght="100" type="text" id="bookTitleInput" name="bookTitle" class="form-control" placeholder="Perníková chaloupka">
+
+                    <label for="AutorInput" class="form-label font-weight-bold">Jméno autora/autorky:</label>
+                    <input value="';echo  $prefillValues['autor'] ?? ''; echo '" maxlenght="100" type="text" id="AutorInput" name="Autor" class="form-control" placeholder="Kevin Mitnick">
+
+                    <label for="GenreInput" class="form-label font-weight-bold">Žánr:</label>
+                    <input value="';echo  $prefillValues['genre'] ?? ''; echo '" maxlenght="100" type="text" id="GenreInput" name="Genre" class="form-control" placeholder="Fantasy">
+
+                    <label for="Form" class="form-label font-weight-bold">Forma:</label>
+                    <select name="forma" id="forma" class="fw-bold form-control">
+                        <option value="beletrie" ' . $selectedBeletrie . '>Beletrie</option>
+                        <option value="naucna" ' . $selectedNaucna . '>Naučná literatura</option>
+                    </select>
+
+                    <label for="DescriptionInput" class="form-label font-weight-bold">Popis:</label>
+                    <input value="';echo  $prefillValues['description'] ?? ''; echo '" maxlenght="1000" type="text" id="DescriptionInput" name="Description" class="form-control" placeholder="Kniho o Jeníčkovy a Mařence...">
+
+                    <label for="imgLinkInput" class="form-label font-weight-bold">Odkaz na obálku knihy:</label>
+                    <input value="';echo  $prefillValues['imgLink'] ?? ''; echo '"  maxlenght="150" type="text" id="imgLinkInput" name="imgLink" class="form-control" placeholder="https://priklad.cz/obrazek.jpg">     
+                    
+                    <label for="Price" class="form-label font-weight-bold">Cena:</label>
+                    <input value="';echo  $prefillValues['price'] ?? ''; echo '"  maxlenght="11" type="number" id="Price" name="price" class="form-control" placeholder="399">
+                    
+                    <div class="d-flex justify-content-center mt-3">
+                        <button class="btn btn-outline-dark btn-sm px-3 bg-success " type="submit" >Potvrdit změny Knihu</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <script src="' . url('/src/addBookCardPrefill.js') . '"></script>
+    ';
+
+    if (isset($_GET['error'])) {
+        $error = $_GET['error'];
+        if ($_GET['error'] == "missingFields") {
+            echo '
+                <div class="float-left col-xl-5 col-md-6 mt-3 mb-4">
+                    <div class="text-center row no-gutters align-items-center">
+                        <div class=" bg-danger rounded p-2 h5 mb-0 font-weight-bold text-gray-800">There were some fields missing</div>
+                    </div>
+                </div>
+            ';
+        } elseif ($error == 'BadSelect') {
+            echo '
+                <div class="float-left col-xl-5 col-md-6 mt-3 mb-4">
+                    <div class="text-center row no-gutters align-items-center">
+                        <div class=" bg-danger rounded p-2 h5 mb-0 font-weight-bold text-gray-800">You can only select Beletrie OR Naucna Literatura</div>
+                    </div>
+                </div>
+            ';
+        } elseif ($error == 'TextTooLong') {
+            echo '
+                <div class="float-left col-xl-5 col-md-6 mt-3 mb-4">
+                    <div class="text-center row no-gutters align-items-center">
+                        <div class=" bg-danger rounded p-2 h5 mb-0 font-weight-bold text-gray-800">Some of the text is too long</div>
+                    </div>
+                </div>
+            ';
+        } elseif ($error == 'FalsePrice') {
+            echo '
+                <div class="float-left col-xl-5 col-md-6 mt-3 mb-4">
+                    <div class="text-center row no-gutters align-items-center">
+                        <div class=" bg-danger rounded p-2 h5 mb-0 font-weight-bold text-gray-800">The price is bad</div>
+                    </div>
+                </div>
+            ';
+        } elseif ($error == 'BookDuplicate') {
+            echo '
+                <div class="float-left col-xl-5 col-md-6 mt-3 mb-4">
+                    <div class="text-center row no-gutters align-items-center">
+                        <div class=" bg-danger rounded p-2 h5 mb-0 font-weight-bold text-gray-800">This book is alredy in db</div>
+                    </div>
+                </div>
+            ';
+        }
+    }
+}
+
+function readerTbody(){
+$allFromCmsLogin = getAllFromCmsLogin();
+
+    foreach ($allFromCmsLogin as $value) {
+        $id = $value['ID_login'];
+        $role = $value['role'];
+        $credits = $value['credits'];
+        $email = $value['email'];
+        $isDeleted = $value['deleted'];
+
+        echo '<tr>';
+        echo '<td>' . $id . '</td>';
+        echo '<td>' . $email . '</td>';
+
+        echo '<td class="text-center">';
+        if ($isDeleted == 1) {
+            echo '<span class="badge badge-danger mb-1 d-block">Smazán</span>';
+        } else {
+            echo '<a href="' . url('/backend/readersEdit.php?id=' . $id . '&action=delete') . '" class="btn btn-sm btn-outline-danger py-1 px-2" title="Smazat uživatele">
+                    <i class="fas fa-trash-alt mr-1"></i> Smazat
+                  </a>';
+        }
+        echo '</td>';
+        
+        echo '<td>
+                <select name="users[' . $id . '][role]" class="form-control form-control-sm">
+                    <option value="user" '; if($role == "user") { echo "selected";} echo '>user</option>
+                    <option value="admin" '; if($role == "admin") { echo "selected";} echo '>admin</option>
+                </select>
+              </td>';
+
+        echo '<td>
+                <input type="number" name="users[' . $id . '][credits]" class="form-control form-control-sm" value="' . $credits . '" min="0">
+              </td>';
+        
+        echo '</tr>';
     }
 }

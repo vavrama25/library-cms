@@ -7,22 +7,22 @@ function emailPrefill(){
 
 
 function logOutBTN() {
-    echo '<br><a href=' . url('CMS/login?logOut') . '>Log out</a>';
+    echo '<br><a href=' . url('/login?logOut') . '>Log out</a>';
 }
 
 function loginCheck(){
     if (isset($_COOKIE['PHPSESSID'])){
         if (isset($_SESSION[$_COOKIE['PHPSESSID']]) AND !empty($_SESSION[$_COOKIE['PHPSESSID']])) {
             if ($_SESSION[$_COOKIE['PHPSESSID']] !== "logged in") {
-                header("Location: " . url("CMS/login"));
+                header("Location: " . url("/login"));
                 exit;
             }
         } else {
-            header("Location: " . url("CMS/login"));
+            header("Location: " . url("/login"));
             exit;
         }
     } else {
-       header("Location: " . url("CMS/login"));
+       header("Location: " . url("/login"));
        exit;
     }
 }
@@ -34,7 +34,7 @@ function checkInactivity() {
         if (time() - $_SESSION['last_activity'] > $timeout) {
             session_unset();
             session_destroy();
-            header("Location: " . url('CMS/login?sessionExpired'));
+            header("Location: " . url('/login?sessionExpired'));
             exit;
         }
     }

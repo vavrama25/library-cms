@@ -270,8 +270,26 @@ function getAllFromCmsUserOrders() {
     return($data);
 }
 
+function getAllFromCmsLogin() {
+    global $db;
+
+    $sql = "SELECT `ID_login`, `email`, `deleted`, `role`, `credits` FROM `cms-login`;";
+    $con = $db->prepare($sql);
+    $con->execute();   
+    $data = $con->fetchAll(PDO::FETCH_ASSOC);
+    return($data);
+}
+
 function AddBookAvailability($count, $book_id) {
     global $db;
+    require_once('../lib/include.php');
+
+    $bookAvailability = checkBookAvailability($book_id);
+
+    if (($bookAvailability + $count) < 0) {
+        header("Location: " . url('/admin/books-manager'));
+        exit();
+    }
 
     $sql ="UPDATE `cms-content` SET `availability`= `availability` + :count  WHERE `ID_cms-content` = :id";
     $con = $db->prepare($sql);
@@ -347,4 +365,35 @@ function addBookToDb($title, $autor, $genre, $form, $description, $imgUrl, $pric
     $con->bindValue(":price", $price, PDO::PARAM_INT);
     $con->execute();
 }
+
+function editBookInDb($title, $autor, $genre, $form, $description, $imgUrl, $price, $book_id) {
+    global $db;
+
+    $sql = "UPDATE `cms-content` SET `title` = :title, `autor` = :autor, `genre` = :genre, `form` = :form, `description` = :description, `imgLink` = :imgUrl, `price` = :price WHERE `ID_cms-content` = :book_id";
+    $con = $db->prepare($sql);
+    $con->bindValue(":title", $title, PDO::PARAM_STR);
+    $con->bindValue(":autor", $autor, PDO::PARAM_STR);
+    $con->bindValue(":genre", $genre, PDO::PARAM_STR);
+    $con->bindValue(":form", $form, PDO::PARAM_STR);
+    $con->bindValue(":description", $description, PDO::PARAM_STR);
+    $con->bindValue(":imgUrl", $imgUrl, PDO::PARAM_STR);
+    $con->bindValue(":price", $price, PDO::PARAM_INT);
+    $con->bindValue(":book_id", $book_id, PDO::PARAM_INT);
+    $con->execute(); 
+}
+
+function bulkUsersUpdate($role, $credits, $ID_login) {
+    global $db;
+
+    $sql = "UPDATE `cms-login` SET `role` = :role, `credits` = :credits WHERE `ID_login` = :ID_login";
+    $con = $db->prepare($sql);
+    $con->bindValue(":role", $role, PDO::PARAM_STR);
+    $con->bindValue(":credits", $credits, PDO::PARAM_INT);
+    $con->bindValue(":ID_login", $ID_login, PDO::PARAM_INT);
+    $con->execute(); 
+    $data = $con->fetchAll(PDO::FETCH_ASSOC);
+    return($data);
+}
+
+
 ?>
