@@ -126,6 +126,17 @@ function getUserInfoById($user_id) {
     return $data; 
 }
 
+function getBookDetailByTitle($title) {
+    global $db;
+
+    $sql = "SELECT * FROM `cms-content` WHERE `title` = :title";
+    $con = $db->prepare($sql);
+    $con->bindValue(":title", $title, PDO::PARAM_STR);
+    $con->execute();   
+    $data = $con->fetchAll(PDO::FETCH_ASSOC);
+    return $data;     
+}
+
 function addCredits($user, $creditsBought) {
     global $db;
 
@@ -205,6 +216,26 @@ function bookOrder($email, $password, $id) {
     }   
 
 
+}
+
+function getAllBorrowHistory($toList) {
+    global $db;
+
+    $sql = "SELECT * FROM `cms-user_orders` WHERE `status` = :status;";
+    $con = $db->prepare($sql);
+    $con->bindValue(":status", $toList, PDO::PARAM_STR);
+    $con->execute();   
+    $data = $con->fetchAll(PDO::FETCH_ASSOC);
+    return($data);
+}
+function getAllFromCmsContent() {
+    global $db;
+
+    $sql = "SELECT * FROM `cms-content`;";
+    $con = $db->prepare($sql);
+    $con->execute();   
+    $data = $con->fetchAll(PDO::FETCH_ASSOC);
+    return($data);    
 }
 
 function getUserBorrowHistory($user_id) {
@@ -394,6 +425,7 @@ function bulkUsersUpdate($role, $credits, $ID_login) {
     $data = $con->fetchAll(PDO::FETCH_ASSOC);
     return($data);
 }
+
 
 
 ?>

@@ -47,7 +47,7 @@ function sidebarRendrer($active) {
 
             <!-- Nav Item - Borrowed -->
             <li class="nav-item '; if($active == "borrowed") {echo 'active';} echo ' ">
-                <a class="nav-link" href="borrowed.php">
+                <a class="nav-link" href="' . url("/admin/borrowed") . '">
                     <i class="fas fa-fw fa-table"></i>
                     <span>Borrowed</span></a>
             </li>
@@ -441,4 +441,257 @@ $allFromCmsLogin = getAllFromCmsLogin();
         
         echo '</tr>';
     }
+}
+
+function listAllBorrowedContent($toList, $userSearch, $bookSearch){
+    require_once 'include.php';
+    global $db;
+    $borrowHistory = getAllBorrowHistory($toList);
+    if ($userSearch !== '') {
+        $userInfo = getUserInfo($userSearch);
+    }
+    if ($bookSearch !== '') {
+        $bookDetail = getBookDetailByTitle($bookSearch);
+    }
+
+    $date = new DateTime();
+    $cardsShown = 0;
+    $borrowedBooks = [];
+    $i = 0;
+    $dayOverPay = getFineValue();
+    $borrowDaysLimit = getBorrowDayLimit();
+    $AllFromCmsUserOrders = getAllFromCmsUserOrders();
+
+    foreach ($borrowHistory as $key => $value) {
+        $sql = "SELECT * FROM `cms-content` WHERE `ID_cms-content` = :id;";
+        $con = $db->prepare($sql);
+        $con->bindValue(":id", $value['content_id'], PDO::PARAM_STR);
+        $con->execute();   
+        $data = $con->fetchAll(PDO::FETCH_ASSOC);
+        $borrowedBooks[] = $data[0];
+    }
+
+    $returned = [];
+    $borrowed = [];
+    $lost = [];
+    echo '<div class="container-fluid">';
+
+
+    foreach ($borrowHistory as $item) {
+        if (isset($userInfo) AND isset($bookDetail)) {
+            if ($userSearch !== '' AND $bookSearch !== '') {
+                if ($item['user_id'] == $userInfo[0]['ID_login'] AND $item['content_id'] == $bookDetail[0]['ID_cms-content']) {
+                    if ($item['status'] == 'borrowed') {
+                        $borrowed[] = $item;
+                    } elseif ($item['status'] == 'returned') {
+                        $returned[] = $item;
+                    } elseif ($item['status'] == 'lost') {
+                        $lost[] = $item;
+                    }
+                
+                }
+            }
+        } elseif (isset($userInfo)) {  
+                if ($item['user_id'] == $userInfo[0]['ID_login']) {
+                    if ($item['status'] == 'borrowed') {
+                        $borrowed[] = $item;
+                    } elseif ($item['status'] == 'returned') {
+                        $returned[] = $item;
+                    } elseif ($item['status'] == 'lost') {
+                        $lost[] = $item;
+                    }
+                }            
+        } elseif (isset($bookDetail)) {
+            if ($item['content_id'] == $bookDetail[0]['ID_cms-content']) {
+                if ($item['status'] == 'borrowed') {
+                    $borrowed[] = $item;
+                } elseif ($item['status'] == 'returned') {
+                    $returned[] = $item;
+                } elseif ($item['status'] == 'lost') {
+                    $lost[] = $item;
+                } 
+            }
+        } else {
+            if ($item['status'] == 'borrowed') {
+                $borrowed[] = $item;
+            } elseif ($item['status'] == 'returned') {
+                $returned[] = $item;
+            } elseif ($item['status'] == 'lost') {
+                $lost[] = $item;
+            } 
+        }
+    }
+
+
+
+    if (count($borrowed) > 0) {
+        echo "
+        <div class='d-flex justify-content-between align-items-end border-bottom pb-3 mt-4 mb-4'>
+            <div>
+                <h1 class='h3 fw-bold mb-1'>Momentálně vypůjčené</h1>
+            </div>
+        </div>
+        <div class='row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-4 g-4 mb-4'>";
+
+        foreach ($borrowed as $value) {
+            $createdDate = new DateTime($value['created']);
+            $dueDate = (clone $createdDate)->modify('+' . $borrowDaysLimit .'day');
+            $ID_cms_user_orders = $value['ID_cms-user_orders'];
+
+            
+            $sql = "SELECT * FROM `cms-content` WHERE `ID_cms-content` = :id;";
+            $con = $db->prepare($sql);
+            $con->bindValue(":id", $value['content_id'], PDO::PARAM_STR);
+            $con->execute();   
+            $bookData = $con->fetch(PDO::FETCH_ASSOC);
+
+            $id = $bookData['ID_cms-content'];
+            $title = $bookData['title'];
+            $autor = $bookData['autor'];
+            $imgLink = $bookData['imgLink'];
+
+            echo "
+            <div class='col'>
+                <div class='card h-100 border-0 shadow-sm rounded-3'>
+                    <div class='bg-secondary bg-opacity-10 d-flex align-items-center justify-content-center text-muted' style='height: 220px;'>
+                        <img class='w-auto h-100 object-fit-cover' src='$imgLink' alt='bookcover'>
+                    </div>
+                    <div class='card-body d-flex flex-column'>
+                        <h2 class='card-title h6 fw-bold mb-1'>$title</h2>
+                        <p class='card-text text-muted small mb-3'>$autor</p>
+                        <div class='mt-auto d-flex justify-content-between align-items-center'>";
+                            if ($date > $dueDate) {
+                                $daysOverdue = $date->diff($dueDate)->days;
+                                echo "<span class='badge text-bg-danger text-white bg-opacity-75 mr-3'>Po termínu: (" . $daysOverdue . ")</span>";
+                            } else { 
+                                echo "<span class='badge text-bg-success text-white bg-opacity-75 mr-3'>Vrátit do: " . $dueDate->format('d.m.Y') . " </span>";
+                            }
+                            echo "
+                            <a class='btn btn-outline-dark btn-sm' href='" . url("/detail?id=$id") . "'>Detail</a>
+                        </div>
+                        <div class='mt-2 d-flex justify-content-between align-items-center'>
+                            <span class='badge text-bg-info text-gray-800 bg-opacity-75'> User: " . $userInfo[0]['email'] . "</span>
+                        ";
+                        echo "<div>";
+                            if ($date > $dueDate) {
+                                $daysOverdue = $date->diff($dueDate)->days;
+                                echo '<a href="'. url("backend/return.php?book_id={$value['content_id']}&id=$ID_cms_user_orders") .'" class="btn btn-outline-dark btn-sm text-bg-danger text-white bg-opacity-75 ">Vrátit a doplatit: (' . $daysOverdue * $dayOverPay . ' Cr)</a>';
+                            } else { 
+                                echo '<a href="' . url("backend/return.php?book_id={$value['content_id']}&id=$ID_cms_user_orders") .'" class="btn btn-outline-dark btn-sm text-bg-success text-white bg-opacity-75 ">Vrátit</a>';
+                            }
+            echo " 
+
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </div>";
+        }
+        echo '</div>';
+        $cardsShown++;
+    }
+    if (count($returned) > 0) {
+        echo "
+        <div class='d-flex justify-content-between align-items-end border-bottom pb-3 mt-5 mb-4'>
+            <div>
+                <h1 class='h3 fw-bold mb-1 text-secondary'>Vrácené</h1>
+            </div>
+        </div>
+        <div class='row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-4 g-4 mb-4'>";
+
+        foreach ($returned as $value) {
+            $createdDate = new DateTime($value['created']);
+            $dueDate = (clone $createdDate)->modify('+' . $borrowDaysLimit .'day');
+            $ID_cms_user_orders = $value['ID_cms-user_orders'];
+
+            $sql = "SELECT * FROM `cms-content` WHERE `ID_cms-content` = :id;";
+            $con = $db->prepare($sql);
+            $con->bindValue(":id", $value['content_id'], PDO::PARAM_STR);
+            $con->execute();   
+            $bookData = $con->fetch(PDO::FETCH_ASSOC);
+
+            $id = $bookData['ID_cms-content'];
+            $title = $bookData['title'];
+            $autor = $bookData['autor'];
+            $imgLink = $bookData['imgLink'];
+           
+            echo "
+            <div class='col'>
+                <div class='card h-100 border-0 shadow-sm rounded-3'>
+                    <div class='bg-secondary bg-opacity-10 d-flex align-items-center justify-content-center text-muted' style='height: 220px;'>
+                        <img class='w-auto h-100 object-fit-cover' src='$imgLink' alt='bookcover'>
+                    </div>
+                    <div class='card-body d-flex flex-column'>
+                        <h2 class='card-title h6 fw-bold mb-1'>$title</h2>
+                        <p class='card-text text-muted small mb-3'>$autor</p>
+                        <div class='mt-auto d-flex justify-content-between align-items-center'>
+                            <span class='badge text-bg-secondary text-white mr-3'>Vráceno</span>
+                            <a class='btn btn-outline-dark btn-sm' href='" . url("/detail?id=$id") . "'>Detail</a>
+                        </div>
+                    </div>
+                </div>
+            </div>";
+        }  
+        echo '</div>';
+        $cardsShown++;
+    }
+    if (count($lost) > 0) {
+        echo "
+        <div class='d-flex justify-content-between align-items-end border-bottom pb-3 mt-5 mb-4'>
+            <div>
+                <h1 class='h3 fw-bold mb-1 text-secondary'>Vrácené</h1>
+            </div>
+        </div>
+        <div class='row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-4 g-4 mb-4'>";
+
+        foreach ($lost as $value) {
+            $createdDate = new DateTime($value['created']);
+            $dueDate = (clone $createdDate)->modify('+' . $borrowDaysLimit .'day');
+            $ID_cms_user_orders = $value['ID_cms-user_orders'];
+
+            $sql = "SELECT * FROM `cms-content` WHERE `ID_cms-content` = :id;";
+            $con = $db->prepare($sql);
+            $con->bindValue(":id", $value['content_id'], PDO::PARAM_STR);
+            $con->execute();   
+            $bookData = $con->fetch(PDO::FETCH_ASSOC);
+
+            $id = $bookData['ID_cms-content'];
+            $title = $bookData['title'];
+            $autor = $bookData['autor'];
+            $imgLink = $bookData['imgLink'];
+           
+            echo "
+            <div class='col'>
+                <div class='card h-100 border-0 shadow-sm rounded-3'>
+                    <div class='bg-secondary bg-opacity-10 d-flex align-items-center justify-content-center text-muted' style='height: 220px;'>
+                        <img class='w-auto h-100 object-fit-cover' src='$imgLink' alt='bookcover'>
+                    </div>
+                    <div class='card-body d-flex flex-column'>
+                        <h2 class='card-title h6 fw-bold mb-1'>$title</h2>
+                        <p class='card-text text-muted small mb-3'>$autor</p>
+                        <div class='mt-auto d-flex justify-content-between align-items-center'>
+                            <span class='badge text-bg-secondary text-white mr-3'>Vráceno</span>
+                            <a class='btn btn-outline-dark btn-sm' href='" . url("/detail?id=$id") . "'>Detail</a>
+                        </div>
+                    </div>
+                </div>
+            </div>";
+        }  
+        echo '</div>';
+        $cardsShown++;
+    }
+    if ($cardsShown <= 0) {
+        echo "
+    
+            <div class='d-flex justify-content-between align-items-end border-bottom pb-3 mt-4 mb-4'>
+                <div>
+                    <h1 class='h3 fw-bold mb-1'>Nic jsme nenašli</h1>
+                </div>
+            </div>
+            <div class='row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-4 g-4 mb-4'>
+            </div>
+        ";
+    }
+
+    echo '</div>';
 }

@@ -4,7 +4,7 @@
 function publicPageHeader() {
     require_once 'include.php';
     echo '
-    <nav class="navbar navbar-expand-lg bg-white border-bottom shadow-sm sticky-top mb-5">
+    <nav class="navbar navbar-expand-lg bg-white border-bottom shadow-sm sticky-top mb-4">
         <div class="container-fluid px-lg-4">
             
             <!-- Levá zóna: Logo a Nadpis -->
@@ -98,17 +98,48 @@ echo '
 function listAllContent($showAddBookCard){
     global $db;
     include_once("include.php");
-    $sql = "SELECT * FROM `cms-content`";
+
+    $sql_count = "SELECT COUNT(*) FROM `cms-content`";
+    $count = $db->prepare($sql_count);
+    $count->execute();
+    $data_count = $count->fetchAll(PDO::FETCH_ASSOC);
+
+    if (isset($_GET['page'])){
+        $page = $_GET['page'] - 1;
+    } else {
+        $page = 0;
+    }
+
+    $validCr = [4, 8, 16];
+
+    if (isset($_GET['cr']) AND in_array($_GET[('cr')], $validCr)) {
+        $cr = $_GET['cr'];
+        $page_modified = $page * $cr;
+    } else {
+        $cr = 4;
+        $page_modified = $page * $cr;
+    }
+
+    foreach ($data_count as $key => $value) {
+        foreach ($value as $key => $value) {
+            $page_count = ceil($value/$cr);
+        }
+    }
+
+
+
+
+    $sql = "SELECT * FROM `cms-content` LIMIT $page_modified, $cr";
     $con = $db->prepare($sql);
     $con->execute();
-    $data = $con->fetchAll(PDO::FETCH_ASSOC); 
-    
-    echo '<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 container-fluid">';
+    $data = $con->fetchAll(PDO::FETCH_ASSOC);
+
+
+    echo '<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 gx-4 gy-3 container-fluid">';
 
     if ($showAddBookCard) {
         addBookCard();
     }
-
     foreach ($data as $key => $value) {
         echo '<div class="col">';
         foreach ($value as $key => $var) {
@@ -143,8 +174,77 @@ function listAllContent($showAddBookCard){
                         </div>
                     </div>
                 </div>
-        </div>";
+        ";
+
+
+        echo "</div>
+        
+        ";
     }
+echo "
+</div>
+<div class='d-flex flex-column flex-sm-row justify-content-between align-items-center gap-3 mt-4 pt-3 border-top'>
+    
+    <!-- Stránkování (Bootstrap Pagination) -->
+    <nav aria-label='Navigace stránek'>
+        <ul class='pagination pagination-sm mb-0 shadow-sm'>
+";
+
+$prevDisabled = '';
+if ($page <= 0) {
+    $prevDisabled = "disabled";
+}
+$prevPage = max(1, $page - 1);
+echo "
+    <li class='page-item $prevDisabled'>
+        <a class='page-link' href='?page=$prevPage&cr=$cr' aria-label='Předchozí'>
+            <span aria-hidden='true'>&laquo;</span>
+        </a>
+    </li>
+";
+
+
+for ($i = 1; $i <= $page_count; $i++) {
+    $activeClass = '';
+    if ($page == ($i - 1)) {
+        $activeClass = "active";
+    }
+    echo "
+        <li class='page-item $activeClass'>
+            <a class='page-link' href='?page=$i&cr=$cr'>$i</a>
+        </li>
+    ";
+}
+
+
+$nextDisabled = '';
+if ($page >= $page_count) {
+    $nextDisabled = 'disabled';
+}
+$nextPage = min($page_count, $page + 2);
+echo "
+    <li class='page-item $nextDisabled'>
+        <a class='page-link' href='?page=$nextPage&cr=$cr' aria-label='Další'>
+            <span aria-hidden='true'>&raquo;</span>
+        </a>
+    </li>
+";
+
+echo "
+        </ul>
+    </nav>
+
+    <!-- Volba počtu položek na stránku -->
+    <form action='" . url('/') . "' method='get' class='d-flex align-items-center gap-2 mb-0'>
+        <label for='crSelect' class='text-muted small mb-0 text-nowrap'>Zobrazit na stránku:</label>
+        <select id='crSelect' name='cr' class='form-select form-select-sm shadow-sm' style='width: auto;' onchange='this.form.submit()'>
+            <option value='4' " . ($cr == 4 ? 'selected' : '') . ">4</option>
+            <option value='8' " . ($cr == 8 ? 'selected' : '') . ">8</option>
+            <option value='16' " . ($cr == 16 ? 'selected' : '') . ">16</option>
+        </select>
+    </form>
+
+";
 }
 
 
