@@ -73,6 +73,22 @@ function isAdmin($email){
     }    
 }
 
+function isWorker($email){
+    global $db;
+
+    $sql = "SELECT role FROM `cms-login` WHERE `email` = :email";
+    $con = $db->prepare($sql);
+    $con->bindValue(":email", $email, PDO::PARAM_STR);
+    $con->execute();   
+    $data = $con->fetchAll(PDO::FETCH_ASSOC);
+
+    if ($data[0]['role'] == 'worker') {
+        return TRUE;
+    } else{
+        return FALSE;
+    }  
+}
+
 function searchJsonCreate() {
     global $db;
     $sql = "SELECT `ID_cms-content`, `title`, `autor` FROM `cms-content`";
@@ -423,9 +439,22 @@ function bulkUsersUpdate($role, $credits, $ID_login) {
     $con->bindValue(":ID_login", $ID_login, PDO::PARAM_INT);
     $con->execute(); 
     $data = $con->fetchAll(PDO::FETCH_ASSOC);
-    return($data);
 }
 
+function settingsBulkUpdate($borrowPeriod, $fine) {
+    global $db;
 
+    $sql = "UPDATE `cms-settings` SET `setting_value` = :borrowPeriod WHERE `setting_key` = 'borrow_day_limit'";
+    $con = $db->prepare($sql);
+    $con->bindValue(":borrowPeriod", $borrowPeriod, PDO::PARAM_INT);
+    $con->execute(); 
+    $data = $con->fetchAll(PDO::FETCH_ASSOC);
+
+    $sql = "UPDATE `cms-settings` SET `setting_value` = :fine WHERE `setting_key` = 'fine_per_day'";
+    $con = $db->prepare($sql);
+    $con->bindValue(":fine", $fine, PDO::PARAM_INT);
+    $con->execute(); 
+    $data = $con->fetchAll(PDO::FETCH_ASSOC);    
+}
 
 ?>

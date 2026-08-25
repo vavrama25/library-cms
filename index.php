@@ -14,6 +14,7 @@ $routes = [
     '/admin/addBook'       => 'admin-folder/addBook.php',
     '/admin/readers'       => 'admin-folder/readers.php',
     '/admin/borrowed'       => 'admin-folder/borrowed.php',
+    '/admin/settings'       => 'admin-folder/settings.php',
     '/login'   => 'public/login.php',
     '/register'  => 'public/register.php',
     '/cantLogIn'  => 'public/cantLogIn.php',

@@ -35,22 +35,41 @@ function sidebarRendrer($active) {
             <!-- Divider -->
             <hr class="sidebar-divider d-none d-md-block">
 
-            <!-- Nav Item - Readers -->
-            <li class="nav-item '; if($active == "readers") {echo 'active';} echo ' ">
-                <a class="nav-link" href="' . url("/admin/readers") . '">
-                    <i class="fas fa-fw fa-table"></i>
-                    <span>Readers</span></a>
-            </li>
-
-            <!-- Divider -->
-            <hr class="sidebar-divider d-none d-md-block">
-
             <!-- Nav Item - Borrowed -->
             <li class="nav-item '; if($active == "borrowed") {echo 'active';} echo ' ">
                 <a class="nav-link" href="' . url("/admin/borrowed") . '">
                     <i class="fas fa-fw fa-table"></i>
                     <span>Borrowed</span></a>
             </li>
+
+
+
+            <!-- Nav Item - Readers -->
+            ';
+            if (isset($_SESSION['user']) AND isAdmin($_SESSION['user'])) {
+            echo '    
+                <!-- Divider -->
+                <hr class="sidebar-divider d-none d-md-block">  
+                <li class="nav-item '; if($active == "readers") {echo 'active';} echo ' ">
+                    <a class="nav-link" href="' . url("/admin/readers") . '">
+                        <i class="fas fa-fw fa-table"></i>
+                        <span>Readers</span></a>
+                </li>
+                <!-- Divider -->
+                <hr class="sidebar-divider d-none d-md-block">
+
+                <!-- Nav Item - settings -->
+                <li class="nav-item '; if($active == "settings") {echo 'active';} echo ' ">
+                    <a class="nav-link" href="' . url("/admin/settings") . '">
+                        <i class="fas fa-fw fa-table"></i>
+                        <span>Settings</span></a>
+                </li>
+            ';      
+            }
+
+echo '
+
+
 
             <!-- Sidebar Toggler (Sidebar) -->
             <div class="text-center d-none d-md-inline">
@@ -478,6 +497,7 @@ function listAllBorrowedContent($toList, $userSearch, $bookSearch){
 
 
     foreach ($borrowHistory as $item) {
+        $userEmail = getUserInfoById($item['user_id'])[0]['email'];
         if (isset($userInfo) AND isset($bookDetail)) {
             if ($userSearch !== '' AND $bookSearch !== '') {
                 if ($item['user_id'] == $userInfo[0]['ID_login'] AND $item['content_id'] == $bookDetail[0]['ID_cms-content']) {
@@ -570,7 +590,7 @@ function listAllBorrowedContent($toList, $userSearch, $bookSearch){
                             <a class='btn btn-outline-dark btn-sm' href='" . url("/detail?id=$id") . "'>Detail</a>
                         </div>
                         <div class='mt-2 d-flex justify-content-between align-items-center'>
-                            <span class='badge text-bg-info text-gray-800 bg-opacity-75'> User: " . $userInfo[0]['email'] . "</span>
+                            <span class='badge text-bg-info text-gray-800 bg-opacity-75'> User: " . $userEmail . "</span>
                         ";
                         echo "<div>";
                             if ($date > $dueDate) {
@@ -628,6 +648,9 @@ function listAllBorrowedContent($toList, $userSearch, $bookSearch){
                             <span class='badge text-bg-secondary text-white mr-3'>Vráceno</span>
                             <a class='btn btn-outline-dark btn-sm' href='" . url("/detail?id=$id") . "'>Detail</a>
                         </div>
+                        <div class='mt-2 d-flex justify-content-between align-items-center'>
+                            <span class='badge text-bg-info text-gray-800 bg-opacity-75'> User: " . $userEmail . "</span>
+                        </div>    
                     </div>
                 </div>
             </div>";
@@ -668,11 +691,14 @@ function listAllBorrowedContent($toList, $userSearch, $bookSearch){
                     </div>
                     <div class='card-body d-flex flex-column'>
                         <h2 class='card-title h6 fw-bold mb-1'>$title</h2>
-                        <p class='card-text text-muted small mb-3'>$autor</p>
+                        <p class='card-text text-muted small mb-3'>$autor</p>                    
                         <div class='mt-auto d-flex justify-content-between align-items-center'>
-                            <span class='badge text-bg-secondary text-white mr-3'>Vráceno</span>
+                            <span class='badge text-bg-secondary text-white mr-3'>Ztraceno</span>
                             <a class='btn btn-outline-dark btn-sm' href='" . url("/detail?id=$id") . "'>Detail</a>
                         </div>
+                        <div class='mt-2 d-flex justify-content-between align-items-center'>
+                            <span class='badge text-bg-info text-gray-800 bg-opacity-75'> User: " . $userEmail . "</span>
+                        </div>    
                     </div>
                 </div>
             </div>";

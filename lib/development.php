@@ -8,5 +8,4 @@ function fancyVarDump($array) {
     echo '</pre>';
 }
 
-
 ?>
