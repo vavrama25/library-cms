@@ -266,57 +266,156 @@ function listAllContentAdmin($showAddBookCard){
     $con->execute();
     $data = $con->fetchAll(PDO::FETCH_ASSOC); 
     
-    echo '<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 container-fluid">';
 
-    if ($showAddBookCard) {
-        addBookCard();
-    }
+
+    $deleted = [];
+    $active = [];
 
     foreach ($data as $key => $value) {
-        echo '<div class="col">';
-        foreach ($value as $key => $var) {
-            if ($key == "ID_cms-content") {
-                $id = $var;
-            } elseif ($key == "title") {
-                $title = $var;
-            } elseif ($key == "autor") {
-                $autor = $var;
-            }elseif ($key == "genre") {
-                $genre = $var;
-            } elseif ($key == "imgLink") {
-                $imgLink = $var;
-            } elseif ($key == "description") {
-                $description = $var;
-            }  elseif ($key == "availability") {
-                $availability = $var;
-            }
 
+        if ($value['deleted']) {
+            $deleted[] = $value;
         }
-    echo "    <div class='card h-100 border-0 shadow-sm rounded-3'>
-                    <div class='bg-secondary bg-opacity-10 d-flex align-items-center justify-content-center text-muted' style='height: 220px;'>
-                        <img class='w-auto h-100 object-fit-cover' src='$imgLink' alt='bookcover'>
-                    </div>
-                    <div class='card-body d-flex flex-column'>
-                        <h2 class='card-title h6 fw-bold mb-1'>$title</h2>
-                        <p class='card-text text-muted small mb-3'>$autor</p>
-                        <div class='mt-auto d-flex justify-content-between align-items-center'>";
-                            if ($availability <= 0) {echo "<span class='badge text-bg-danger text-white bg-opacity-75'>Nedostupné</span>";} else { echo"<span class='badge text-bg-success text-white bg-opacity-75'> Dostupné ($availability)</span>";}
-                            echo "
-                            <a class='btn btn-outline-dark btn-sm' href='"; echo url("/admin/addBook?edit=$id"); echo "'>Upravit</a>
-                        </div>
-                        <div class=' mt-auto d-flex justify-content-between align-items-center'>
-                            <form class='mt-2 w-100' action='" . url("/backend/addBook-process.php?add=$id") . "' method='post'>
-                                <label for='available' class='form-label small fw-bold mb-1 d-block text-start'>Přidat/odebrat:</label>    
-
-                                <div class='input-group input-group-sm w-50'>
-                                    <input value='";echo  $prefillValues['price'] ?? ''; echo "'  maxlenght='11' type='number' id='count' name='count' class='form-control w-25' placeholder='$availability'>      
-                                    <button class='btn btn-outline-dark btn-sm px-3 bg-success ' type='submit' >Add</button>
-                                </div>
-                            </form>
-                        </div>
+        else {
+            $active[] = $value;
+        }
+    }
+    if (count($active) > 0) {
+        echo "    
+                <div class='d-flex justify-content-between align-items-end border-bottom pb-3 mt-5 mb-4'>
+                    <div>
+                        <h1 class='h3 fw-bold mb-1 text-secondary'>Aktivní</h1>
                     </div>
                 </div>
-        </div>";
+        ";
+        echo '<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 container-fluid">';
+        if ($showAddBookCard) {
+            addBookCard();
+        }
+        foreach ($active as $key => $value) {
+
+            foreach ($value as $key => $var) {
+                if ($key == "ID_cms-content") {
+                    $id = $var;
+                } elseif ($key == "title") {
+                    $title = $var;
+                } elseif ($key == "autor") {
+                    $autor = $var;
+                }elseif ($key == "genre") {
+                    $genre = $var;
+                } elseif ($key == "imgLink") {
+                    $imgLink = $var;
+                } elseif ($key == "description") {
+                    $description = $var;
+                }  elseif ($key == "availability") {
+                    $availability = $var;
+                }
+
+            }
+                
+                echo "
+                        <div class='col'>
+                            <div class='card h-100 border-0 shadow-sm rounded-3'>
+                                <div class='bg-secondary bg-opacity-10 d-flex align-items-center justify-content-center text-muted' style='height: 220px;'>
+                                    <img class='w-auto h-100 object-fit-cover' src='$imgLink' alt='bookcover'>
+                                </div>
+                                <div class='card-body d-flex flex-column'>
+                                    <h2 class='card-title h6 fw-bold mb-1'>$title</h2>
+                                    <p class='card-text text-muted small mb-3'>$autor</p>
+                                    <div class='mt-auto d-flex justify-content-between align-items-center'>";
+                                        if ($availability <= 0) {echo "<span class='badge text-bg-danger text-white bg-opacity-75'>Nedostupné</span>";} else { echo"<span class='badge text-bg-success text-white bg-opacity-75'> Dostupné ($availability)</span>";}
+                                        echo "
+                                        <a class='btn btn-outline-dark btn-sm' href='"; echo url("/admin/addBook?edit=$id"); echo "'>Upravit</a>
+                                    </div>
+                                    <div class=' mt-auto d-flex justify-content-between align-items-end'>
+                                        <form class='mt-2 w-100' action='" . url("/backend/addBook-process.php?add=$id") . "' method='post'>
+                                            <label for='available' class='form-label small fw-bold mb-1 d-block text-start'>Přidat/odebrat:</label>    
+
+                                            <div class='input-group input-group-sm w-50'>
+                                                <input value='";echo  $prefillValues['price'] ?? ''; echo "'  maxlenght='11' type='number' id='count' name='count' class='form-control w-25' placeholder='$availability'>      
+                                                <button class='btn btn-outline-dark btn-sm px-3 bg-success ' type='submit' >Add</button>
+                                            </div>
+                                        </form>
+                                        <form class='mt-2 w-auto float-right' action='" . url("/backend/addBook-process.php?delete=$id") . "' method='post'>
+                                            <div class='input-group input-group-sm w-50'>
+                                                <button name='delete' value='<?= $id ?>' class='btn btn-outline-dark btn-sm px-3 bg-danger ' type='submit' >Delete</button>
+                                            </div>    
+                                        </form>                        
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+                ";
+            
+        }
+        echo "</div>";
+    }
+    if (count($deleted) > 0) {
+        echo "    
+                <div class='d-flex justify-content-between align-items-end border-bottom pb-3 mt-5 mb-4'>
+                    <div>
+                        <h1 class='h3 fw-bold mb-1 text-secondary'>Smazané</h1>
+                    </div>
+                </div>
+        ";
+        echo '<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 container-fluid">';
+        foreach ($deleted as $key => $value) {
+
+            foreach ($value as $key => $var) {
+                if ($key == "ID_cms-content") {
+                    $id = $var;
+                } elseif ($key == "title") {
+                    $title = $var;
+                } elseif ($key == "autor") {
+                    $autor = $var;
+                }elseif ($key == "genre") {
+                    $genre = $var;
+                } elseif ($key == "imgLink") {
+                    $imgLink = $var;
+                } elseif ($key == "description") {
+                    $description = $var;
+                }  elseif ($key == "availability") {
+                    $availability = $var;
+                }
+
+            }
+                
+                echo "
+                        <div class='col'>
+                            <div class='card h-100 border-0 shadow-sm rounded-3'>
+                                <div class='bg-secondary bg-opacity-10 d-flex align-items-center justify-content-center text-muted' style='height: 220px;'>
+                                    <img class='w-auto h-100 object-fit-cover' src='$imgLink' alt='bookcover'>
+                                </div>
+                                <div class='card-body d-flex flex-column'>
+                                    <h2 class='card-title h6 fw-bold mb-1'>" . htmlspecialchars($title) . "</h2>
+                                    <p class='card-text text-muted small mb-3'>" . htmlspecialchars($autor) . "</p>
+                                    <div class='mt-auto d-flex justify-content-between align-items-center'>";
+                                        if ($availability <= 0) {echo "<span class='badge text-bg-danger text-white bg-opacity-75'>Nedostupné</span>";} else { echo"<span class='badge text-bg-success text-white bg-opacity-75'> Dostupné ($availability)</span>";}
+                                        echo "
+                                        <a class='btn btn-outline-dark btn-sm' href='"; echo url("/admin/addBook?edit=$id"); echo "'>Upravit</a>
+                                    </div>
+                                    <div class=' mt-auto d-flex justify-content-between align-items-end'>
+                                        <form class='mt-2 w-100' action='" . url("/backend/addBook-process.php?add=$id") . "' method='post'>
+                                            <label for='available' class='form-label small fw-bold mb-1 d-block text-start'>Přidat/odebrat:</label>    
+
+                                            <div class='input-group input-group-sm w-50'>
+                                                <input value='";echo  $prefillValues['price'] ?? ''; echo "'  maxlenght='11' type='number' id='count' name='count' class='form-control w-25' placeholder='$availability'>      
+                                                <button class='btn btn-outline-dark btn-sm px-3 bg-success ' type='submit' >Add</button>
+                                            </div>
+                                        </form>
+                                        <form class='mt-2 w-auto float-right' action='" . url("/backend/addBook-process.php?addBack=$id") . "' method='post'>
+                                            <div class='input-group input-group-sm w-auto'>
+                                                <button name='add' value='<?= $id ?>' class='btn btn-outline-dark btn-sm px-3 bg-success ' type='submit' >Add back</button>
+                                            </div>
+                                        </form>                        
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+                ";
+            
+        }
+        echo "</div>";
     }
 }
 
@@ -435,7 +534,7 @@ $allFromCmsLogin = getAllFromCmsLogin();
 
         echo '<tr>';
         echo '<td>' . $id . '</td>';
-        echo '<td>' . $email . '</td>';
+        echo '<td>' . htmlspecialchars($email) . '</td>';
 
         echo '<td class="text-center">';
         if ($isDeleted == 1) {
@@ -450,6 +549,7 @@ $allFromCmsLogin = getAllFromCmsLogin();
         echo '<td>
                 <select name="users[' . $id . '][role]" class="form-control form-control-sm">
                     <option value="user" '; if($role == "user") { echo "selected";} echo '>user</option>
+                    <option value="worker" '; if($role == "worker") { echo "selected";} echo '>worker</option>
                     <option value="admin" '; if($role == "admin") { echo "selected";} echo '>admin</option>
                 </select>
               </td>';
@@ -558,7 +658,6 @@ function listAllBorrowedContent($toList, $userSearch, $bookSearch){
             $dueDate = (clone $createdDate)->modify('+' . $borrowDaysLimit .'day');
             $ID_cms_user_orders = $value['ID_cms-user_orders'];
 
-            
             $sql = "SELECT * FROM `cms-content` WHERE `ID_cms-content` = :id;";
             $con = $db->prepare($sql);
             $con->bindValue(":id", $value['content_id'], PDO::PARAM_STR);
@@ -570,6 +669,8 @@ function listAllBorrowedContent($toList, $userSearch, $bookSearch){
             $autor = $bookData['autor'];
             $imgLink = $bookData['imgLink'];
 
+            $userEmail = getUserInfoById($value['user_id'])[0]['email'];
+
             echo "
             <div class='col'>
                 <div class='card h-100 border-0 shadow-sm rounded-3'>
@@ -577,8 +678,8 @@ function listAllBorrowedContent($toList, $userSearch, $bookSearch){
                         <img class='w-auto h-100 object-fit-cover' src='$imgLink' alt='bookcover'>
                     </div>
                     <div class='card-body d-flex flex-column'>
-                        <h2 class='card-title h6 fw-bold mb-1'>$title</h2>
-                        <p class='card-text text-muted small mb-3'>$autor</p>
+                        <h2 class='card-title h6 fw-bold mb-1'>" . htmlspecialchars($title) . "</h2>
+                        <p class='card-text text-muted small mb-3'>" . htmlspecialchars($autor) . "</p>
                         <div class='mt-auto d-flex justify-content-between align-items-center'>";
                             if ($date > $dueDate) {
                                 $daysOverdue = $date->diff($dueDate)->days;
@@ -590,9 +691,11 @@ function listAllBorrowedContent($toList, $userSearch, $bookSearch){
                             <a class='btn btn-outline-dark btn-sm' href='" . url("/detail?id=$id") . "'>Detail</a>
                         </div>
                         <div class='mt-2 d-flex justify-content-between align-items-center'>
-                            <span class='badge text-bg-info text-gray-800 bg-opacity-75'> User: " . $userEmail . "</span>
+                            <span class='badge text-bg-info text-gray-800 bg-opacity-75'> User: " . htmlspecialchars($userEmail) . "</span>
                         ";
-                        echo "<div>";
+                        echo "<div>
+                            <a href='". url("backend/return.php?lost_book_id={$value['content_id']}&id=$ID_cms_user_orders") ."' class='btn btn-outline-dark btn-sm text-bg-danger text-white bg-opacity-75 mr-3'>Ztraceno</a>";
+
                             if ($date > $dueDate) {
                                 $daysOverdue = $date->diff($dueDate)->days;
                                 echo '<a href="'. url("backend/return.php?book_id={$value['content_id']}&id=$ID_cms_user_orders") .'" class="btn btn-outline-dark btn-sm text-bg-danger text-white bg-opacity-75 ">Vrátit a doplatit: (' . $daysOverdue * $dayOverPay . ' Cr)</a>';
@@ -634,7 +737,9 @@ function listAllBorrowedContent($toList, $userSearch, $bookSearch){
             $title = $bookData['title'];
             $autor = $bookData['autor'];
             $imgLink = $bookData['imgLink'];
-           
+
+            $userEmail = getUserInfoById($value['user_id'])[0]['email'];
+
             echo "
             <div class='col'>
                 <div class='card h-100 border-0 shadow-sm rounded-3'>
@@ -642,14 +747,14 @@ function listAllBorrowedContent($toList, $userSearch, $bookSearch){
                         <img class='w-auto h-100 object-fit-cover' src='$imgLink' alt='bookcover'>
                     </div>
                     <div class='card-body d-flex flex-column'>
-                        <h2 class='card-title h6 fw-bold mb-1'>$title</h2>
-                        <p class='card-text text-muted small mb-3'>$autor</p>
+                        <h2 class='card-title h6 fw-bold mb-1'>" . htmlspecialchars($title) . "</h2>
+                        <p class='card-text text-muted small mb-3'>" . htmlspecialchars($autor) . "</p>
                         <div class='mt-auto d-flex justify-content-between align-items-center'>
                             <span class='badge text-bg-secondary text-white mr-3'>Vráceno</span>
                             <a class='btn btn-outline-dark btn-sm' href='" . url("/detail?id=$id") . "'>Detail</a>
                         </div>
                         <div class='mt-2 d-flex justify-content-between align-items-center'>
-                            <span class='badge text-bg-info text-gray-800 bg-opacity-75'> User: " . $userEmail . "</span>
+                            <span class='badge text-bg-info text-gray-800 bg-opacity-75'> User: " . htmlspecialchars($userEmail) . "</span>
                         </div>    
                     </div>
                 </div>
@@ -662,7 +767,7 @@ function listAllBorrowedContent($toList, $userSearch, $bookSearch){
         echo "
         <div class='d-flex justify-content-between align-items-end border-bottom pb-3 mt-5 mb-4'>
             <div>
-                <h1 class='h3 fw-bold mb-1 text-secondary'>Vrácené</h1>
+                <h1 class='h3 fw-bold mb-1 text-secondary'>Ztracené</h1>
             </div>
         </div>
         <div class='row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-4 g-4 mb-4'>";
@@ -682,7 +787,9 @@ function listAllBorrowedContent($toList, $userSearch, $bookSearch){
             $title = $bookData['title'];
             $autor = $bookData['autor'];
             $imgLink = $bookData['imgLink'];
-           
+
+            $userEmail = getUserInfoById($value['user_id'])[0]['email'];
+
             echo "
             <div class='col'>
                 <div class='card h-100 border-0 shadow-sm rounded-3'>
@@ -697,7 +804,7 @@ function listAllBorrowedContent($toList, $userSearch, $bookSearch){
                             <a class='btn btn-outline-dark btn-sm' href='" . url("/detail?id=$id") . "'>Detail</a>
                         </div>
                         <div class='mt-2 d-flex justify-content-between align-items-center'>
-                            <span class='badge text-bg-info text-gray-800 bg-opacity-75'> User: " . $userEmail . "</span>
+                            <span class='badge text-bg-info text-gray-800 bg-opacity-75'> User: " . htmlspecialchars($userEmail) . "</span>
                         </div>    
                     </div>
                 </div>

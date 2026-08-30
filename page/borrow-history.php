@@ -7,6 +7,7 @@ if (isset($_COOKIE['PHPSESSID']) AND isset($_SESSION[$_COOKIE['PHPSESSID']]) AND
     $user = $_SESSION['user'];
 } else {
     header("Location: " . url('/login'));
+    exit();
 }
 
 $userInfo = getUserInfo($user);
@@ -31,6 +32,17 @@ $user_id = $userInfo[0]['ID_login'];
     ?>
     <main class="container py-5">
         <?php 
+                
+        if (isset($_GET['TooManyBooks'])) {
+            echo '
+                <div class="float-left col-xl-12 col-md-6 mt-3 mb-4">
+                    <div class="text-center row no-gutters align-items-center">
+                        <div class=" bg-danger rounded p-2 h5 mb-0 font-weight-bold text-gray-800">You have reached the limit of borrowed books (' . getBooksBorrowedLimit() . ') You can borrow more after you return some.</div>
+                    </div>
+                </div>
+            ';
+        }
+
         listBorrowedContent($user_id); 
         ?>
     </main>

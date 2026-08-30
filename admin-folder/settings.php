@@ -51,89 +51,164 @@ if (isset($_COOKIE['PHPSESSID']) AND isset($_SESSION[$_COOKIE['PHPSESSID']]) AND
         <div id="content-wrapper" class="d-flex flex-column">
 
             <!-- Main Content -->
-            <div id="content">
+            <div id="content" class="d-flex flex-column flex-grow-1 w-100">
 
                <?php topbarRender($user); ?>
-                <div class="container-fluid py-4">
+                <div class="container-fluid py-4 flex-grow-1 d-flex flex-column justify-content-center align-items-center" id="borrowRules">
+    
 
-                    <!-- Page Heading -->
-                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1 class="h3 mb-0 text-gray-800 fw-bold">Systémové nastavení</h1>
-                    </div>
+                    <div class="mb-5 w-100" style="max-width: 75%;">
 
-                    <div class="row">
-                        <div class="col-lg-8 col-xl-7">
-                            
-                            <div class="card shadow mb-4 border-0">
+                        <form action="<?= url('/backend/settingsEdit.php'); ?>" method="POST">
+
+
+                            <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                                <h1 class="h3 mb-0 text-gray-800 fw-bold">Nastavení výpůjček</h1>
+                            </div>
+
+                            <div class="card shadow mb-5 border-0">
                                 <div class="card-header py-3 bg-white border-bottom d-flex align-items-center justify-content-between">
                                     <h6 class="m-0 font-weight-bold text-primary">
                                         <i class="fas fa-sliders-h mr-2"></i>Pravidla půjčování a poplatků
                                     </h6>
                                 </div>
                                 
-                                <form action="<?= url('/backend/settingsEdit.php'); ?>" method="POST">
-                                    <div class="card-body">
-                                        
-                                        <div class="mb-4">
-                                            <label for="borrowPeriod" class="form-label font-weight-bold text-gray-800 mb-1">
-                                                Maximální doba výpůjčky
-                                            </label>
-                                            <div class="input-group shadow-sm">
-                                                <span class="input-group-text bg-light border-gray-300 text-gray-500">
-                                                    <i class="fas fa-calendar-alt"></i>
-                                                </span>
-                                                <input type="number" 
-                                                    id="borrowPeriod"
-                                                    name="borrowPeriod" 
-                                                    class="form-control" 
-                                                    min="1" 
-                                                    value="<?= getBorrowDayLimit(); ?>" 
-                                                    required>
-                                                <span class="input-group-text bg-light border-gray-300 text-gray-600 font-weight-bold">
-                                                    dnů
-                                                </span>
-                                            </div>
-                                            <small class="form-text text-muted">
-                                                Standardní počet dní, po které může mít čtenář knihu bez sankce.
-                                            </small>
+                                <div class="card-body">
+                                    <div class="mb-4">
+                                        <label for="borrowPeriod" class="form-label font-weight-bold text-gray-800 mb-1">
+                                            Maximální doba výpůjčky
+                                        </label>
+                                        <div class="input-group shadow-sm">
+                                            <span class="input-group-text bg-light border-gray-300 text-gray-500">
+                                                <i class="fas fa-calendar-alt"></i>
+                                            </span>
+                                            <input type="number" 
+                                                id="borrowPeriod"
+                                                name="borrowPeriod" 
+                                                class="form-control" 
+                                                min="1" 
+                                                value="<?= getBorrowDayLimit(); ?>" 
+                                                required>
+                                            <span class="input-group-text bg-light border-gray-300 text-gray-600 font-weight-bold">
+                                                dnů
+                                            </span>
                                         </div>
-
-                                        <div class="mb-4">
-                                            <label for="fine" class="form-label font-weight-bold text-gray-800 mb-1">
-                                                Sankce za překročení termínu
-                                            </label>
-                                            <div class="input-group shadow-sm">
-                                                <span class="input-group-text bg-light border-gray-300 text-gray-500">
-                                                    <i class="fas fa-coins"></i>
-                                                </span>
-                                                <input type="number" 
-                                                    id="fine"
-                                                    name="fine" 
-                                                    class="form-control" 
-                                                    min="0" 
-                                                    value="<?= getFineValue(); ?>" 
-                                                    required>
-                                                <span class="input-group-text bg-light border-gray-300 text-gray-600 font-weight-bold">
-                                                    kreditů / den
-                                                </span>
-                                            </div>
-                                            <small class="form-text text-muted">
-                                                Poplatek účtovaný automaticky za každý započatý den prodlení.
-                                            </small>
-                                        </div>
-
+                                        <small class="form-text text-muted">Standardní počet dní, po které může mít čtenář knihu bez sankce.</small>
                                     </div>
 
-                                    <div class="card-footer bg-light py-3 d-flex justify-content-end">
-                                        <button type="submit" class="btn btn-primary shadow-sm px-4 font-weight-bold">
-                                            <i class="fas fa-save mr-2 text-white-50"></i>Uložit změny
-                                        </button>
+                                    <div class="mb-4">
+                                        <label for="fine" class="form-label font-weight-bold text-gray-800 mb-1">
+                                            Sankce za překročení termínu
+                                        </label>
+                                        <div class="input-group shadow-sm">
+                                            <span class="input-group-text bg-light border-gray-300 text-gray-500">
+                                                <i class="fas fa-coins"></i>
+                                            </span>
+                                            <input type="number" 
+                                                id="fine"
+                                                name="fine" 
+                                                class="form-control" 
+                                                min="0" 
+                                                value="<?= getFineValue(); ?>" 
+                                                required>
+                                            <span class="input-group-text bg-light border-gray-300 text-gray-600 font-weight-bold">
+                                                kreditů / den
+                                            </span>
+                                        </div>
+                                        <small class="form-text text-muted">Poplatek účtovaný automaticky za každý započatý den prodlení.</small>
                                     </div>
-                                </form>
+
+                                    <div class="mb-4">
+                                        <label for="booksBorrowLimit" class="form-label font-weight-bold text-gray-800 mb-1">
+                                            Limit výpůjček
+                                        </label>
+                                        <div class="input-group shadow-sm">
+                                            <span class="input-group-text bg-light border-gray-300 text-gray-500">
+                                                <i class="fas fa-book"></i>
+                                            </span>
+                                            <input type="number" 
+                                                id="booksBorrowLimit"
+                                                name="booksBorrowLimit" 
+                                                class="form-control" 
+                                                min="1" 
+                                                value="<?= getBooksBorrowedLimit(); ?>" 
+                                                required>
+                                            <span class="input-group-text bg-light border-gray-300 text-gray-600 font-weight-bold">
+                                                knih
+                                            </span>
+                                        </div>
+                                        <small class="form-text text-muted">Počet knih, který si uživatel může mít půjčené v jeden moment.</small>
+                                    </div>
+                                </div>
                             </div>
 
-                        </div>
-                    </div>
+
+                            <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                                <h1 class="h3 mb-0 text-gray-800 fw-bold">Systémové nastavení</h1>
+                            </div>
+
+                            <div class="card shadow mb-4 border-0">
+                                <div class="card-header py-3 bg-white border-bottom d-flex align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-primary">
+                                        <i class="fas fa-desktop mr-2"></i>Frontend a vzhled
+                                    </h6>
+                                </div>
+                                
+                                <div class="card-body">
+                                    <!-- Nadpis webu -->
+                                    <div class="mb-4">
+                                        <label for="pageHeading" class="form-label font-weight-bold text-gray-800 mb-1">
+                                            Nadpis stránky
+                                        </label>
+                                        <div class="input-group shadow-sm">
+                                            <span class="input-group-text bg-light border-gray-300 text-gray-500">
+                                                <i class="fas fa-heading"></i>
+                                            </span>
+                                            <input type="text" 
+                                                id="pageHeading"
+                                                name="pageHeading" 
+                                                class="form-control" 
+                                                value="<?= getPageHeading(); ?>" 
+                                                required>
+                                            <span class="input-group-text bg-light border-gray-300 text-gray-600 font-weight-bold">
+                                                Text
+                                            </span>
+                                        </div>
+                                        <small class="form-text text-muted">Hlavní titulek v hlavičce a navigaci webu.</small>
+                                    </div>
+
+                                    <div class="mb-4">
+                                        <label for="logo" class="form-label font-weight-bold text-gray-800 mb-1">
+                                            Cesta k logu
+                                        </label>
+                                        <div class="input-group shadow-sm">
+                                            <span class="input-group-text bg-light border-gray-300 text-gray-500">
+                                                <i class="fas fa-image"></i>
+                                            </span>
+                                            <input type="text" 
+                                                id="logo"
+                                                name="logo" 
+                                                class="form-control" 
+                                                value="<?= getLogo(); ?>" 
+                                                required>
+                                            <span class="input-group-text bg-light border-gray-300 text-gray-600 font-weight-bold">
+                                                URL / Cesta
+                                            </span>
+                                        </div>
+                                        <small class="form-text text-muted">Relativní nebo absolutní cesta k obrázku loga.</small>
+                                    </div>
+                                </div>
+
+                                <div class="card-footer bg-light py-3 d-flex justify-content-end">
+                                    <button type="submit" class="btn btn-primary shadow-sm px-4 font-weight-bold">
+                                        <i class="fas fa-save mr-2 text-white-50"></i>Uložit veškeré nastavení
+                                    </button>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>              
+                                    
 
                 </div>
             </div>

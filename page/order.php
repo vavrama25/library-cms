@@ -3,6 +3,13 @@
 require_once('lib/include.php'); 
 session_start(); 
 
+if (isset($_COOKIE['PHPSESSID']) AND isset($_SESSION[$_COOKIE['PHPSESSID']]) AND !empty($_SESSION[$_COOKIE['PHPSESSID']]) AND $_SESSION[$_COOKIE['PHPSESSID']] !== "LogedOut" AND isset($_SESSION['user'])) {
+    $user = $_SESSION['user'];
+} else {
+    header("Location: " . url('/login'));
+    exit();
+}
+
 if (isset($_GET['title'])) {
     if (isset($_SESSION['user'])) {
         $user = $_SESSION['user'];
@@ -14,6 +21,7 @@ if (isset($_GET['title'])) {
     }
 } else {
     header("Location: " . url('/'));
+    exit();
 }
 
 

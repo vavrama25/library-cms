@@ -30,55 +30,53 @@ include_once("lib/include.php");
 <body>
     <div class="row d-flex justify-content-center flex-wrap align-content-center">
         <div class="col-lg-6">
-        <div class="p-5">
-            <div class="text-center">
-                <h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
-            </div>
-            <form class="user" action="<?php echo url('/backend/login-process.php'); ?>" method="post">
-                <div class="form-group">
-                    <input type="email" class="form-control form-control-user"
-                        name="email" aria-describedby="emailHelp"
-                        placeholder="Enter Email Address..." value="<?php emailPrefill(); ?>">
+            <div class="p-5">
+                <div class="text-center">
+                    <h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
                 </div>
-                <div class="form-group">
-                    <input type="password" class="form-control form-control-user"
-                        name="password" placeholder="Password">
-                </div>
-                <button type="submit" class="btn btn-primary btn-user btn-block">
-                    Login
-                </button>
+                <form class="user" action="<?php echo url('/backend/login-process.php'); ?>" method="post">
+                    <div class="form-group">
+                        <input type="email" class="form-control form-control-user"
+                            name="email" aria-describedby="emailHelp"
+                            placeholder="Enter Email Address..." value="<?php emailPrefill(); ?>">
+                    </div>
+                    <div class="form-group">
+                        <input type="password" class="form-control form-control-user"
+                            name="password" placeholder="Password">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-user btn-block">
+                        Login
+                    </button>
+                    <hr>
+                </form>
                 <hr>
-                <a href="index.html" class="btn btn-google btn-user btn-block">
-                    <i class="fab fa-google fa-fw"></i> Login with Google
-                </a>
-            </form>
-            <hr>
-            <div class="text-center">
-                <a class="small" href="<?php echo url('/cantLogIn'); ?>">Forgot Password?</a>
-            </div>
-            <div class="text-center">
-                <a class="small" href="<?php echo url('/register'); ?>">Create an Account!</a>
-            </div>
-            <div class="text-center">
-            <?php 
-            if (isset($_COOKIE["PHPSESSID"])){
-                if (isset($_GET['logOut'])) {
-                    $_SESSION[$_COOKIE["PHPSESSID"]] = "LogedOut";
+                <div class="text-center">
+                    <a class="small" href="<?php echo url('/cantLogIn'); ?>">Forgot Password?</a>
+                </div>
+                <div class="text-center">
+                    <a class="small" href="<?php echo url('/register'); ?>">Create an Account!</a>
+                </div>
+                <div class="text-center">
+                <?php 
+                if (isset($_COOKIE["PHPSESSID"])){
+                    if (isset($_GET['logOut'])) {
+                        $_SESSION[$_COOKIE["PHPSESSID"]] = "LogedOut";
+                    }
+                    if (isset($_GET['regSucess'])) {
+                        echo "<p class='mt-5 text fs-3 text-bg-danger rounded-4'>Registration was a sucess you can now log in</p>"; 
+                    }
+                    if (isset($_GET['smtIsWrong'])) {
+                        echo "<p class='mt-5 text fs-3 text-bg-danger rounded-4'>Something went wrong try again</p>"; 
+                    }    
+                    if (isset($_GET['emailSent'])) {
+                        echo "<p class='mt-5 text fs-3 text-bg-danger rounded-4'>Email sent succesfully.</p>"; 
+                    } 
+                    if (isset($_GET['sessionExpired'])) {
+                        echo "<p class='mt-5 text fs-3 text-bg-danger rounded-4'>Logged out due to inactivity.</p>"; 
+                    }
                 }
-                if (isset($_GET['regSucess'])) {
-                    echo "<p class='mt-5 text fs-3 text-bg-danger rounded-4'>Registration was a sucess you can now log in</p>"; 
-                }
-                if (isset($_GET['smtIsWrong'])) {
-                    echo "<p class='mt-5 text fs-3 text-bg-danger rounded-4'>Something went wrong try again</p>"; 
-                }    
-                if (isset($_GET['emailSent'])) {
-                    echo "<p class='mt-5 text fs-3 text-bg-danger rounded-4'>Email sent succesfully.</p>"; 
-                } 
-                if (isset($_GET['sessionExpired'])) {
-                    echo "<p class='mt-5 text fs-3 text-bg-danger rounded-4'>Logged out due to inactivity.</p>"; 
-                }
-            }
-            ?>
+                ?>
+                </div>
             </div>
         </div>
     </div>

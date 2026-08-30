@@ -9,11 +9,8 @@ function publicPageHeader() {
             
             <!-- Levá zóna: Logo a Nadpis -->
             <a class="navbar-brand fw-bold d-flex align-items-center gap-2 text-dark" href="' . url('/') . '">
-                <!-- Jednoduchá SVG ikona knihy místo loga -->
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-book" viewBox="0 0 16 16">
-                    <path d="M1 2.828c.885-.37 2.154-.769 3.388-.893 1.33-.134 2.458.063 3.112.752v9.746c-.935-.53-2.12-.603-3.213-.493-1.18.12-2.37.461-3.287.811V2.828zm7.5-.141c.654-.689 1.782-.886 3.112-.752 1.234.124 2.503.523 3.388.893v9.923c-.918-.35-2.107-.692-3.287-.81-1.094-.111-2.278-.039-3.213.492V2.687zM8 1.783C7.015.936 5.587.81 4.287.94c-1.514.153-3.042.672-3.994 1.105A.5.5 0 0 0 0 2.5v11a.5.5 0 0 0 .707.455c.882-.4 2.303-.881 3.68-1.02 1.409-.142 2.59.087 3.223.877a.5.5 0 0 0 .78 0c.633-.79 1.814-1.019 3.222-.877 1.378.139 2.8.62 3.681 1.02A.5.5 0 0 0 16 13.5v-11a.5.5 0 0 0-.293-.455c-.952-.433-2.48-.952-3.994-1.105C10.413.809 8.985.936 8 1.783z"/>
-                </svg>
-                Knihovna CMS
+                <img src="' . getLogo() . '" alt="Logo" class="img-fluid" style="max-height: 32px; width: auto; object-fit: contain;">
+                ' . htmlspecialchars(getPageHeading()) .'
             </a>
 
             <!-- Mobilní toggle tlačítko -->
@@ -52,9 +49,8 @@ function publicPageHeader() {
                             Katalog
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
-                            <li><a class="dropdown-item" href="?katalog=novinky">Novinky</a></li>
-                            <li><a class="dropdown-item" href="?katalog=beletrie">Beletrie</a></li>
-                            <li><a class="dropdown-item" href="?katalog=naucna">Naučná literatura</a></li>
+                            <li><a class="dropdown-item" href="?katalog=beletrie'; if(isset($_GET['cr'])){ echo '&cr=' . $_GET['cr']; } echo '">Beletrie</a></li>
+                            <li><a class="dropdown-item" href="?katalog=naucna'; if(isset($_GET['cr'])){ echo '&cr=' . $_GET['cr']; } echo '">Naučná literatura</a></li>
                         </ul>
                     </li>
                     <!-- Účet / Login -->
@@ -65,10 +61,10 @@ function publicPageHeader() {
                         echo '
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle text-dark fw-medium" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <span class="text-gray-600 small">' . $_SESSION['user'] . '</span>
+                                <span class="text-gray-600 small">' . htmlspecialchars($_SESSION['user']) . '</span>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end shadow border-0" aria-labelledby="userDropdown">
-                                <li><a class="dropdown-item" href="#">Nastavení</a></li>
+                                <li><a class="dropdown-item" href="' . url('/accSettings') . '">Nastavení</a></li>
                                 <li><a class="dropdown-item" href="' . url('/history') .'">Historie výpůjček</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class=" dropdown-item text-danger" href="' . url('/login?logOut') . '">Odhlásit se</a></li>
@@ -99,10 +95,24 @@ function listAllContent($showAddBookCard){
     global $db;
     include_once("include.php");
 
-    $sql_count = "SELECT COUNT(*) FROM `cms-content`";
-    $count = $db->prepare($sql_count);
-    $count->execute();
-    $data_count = $count->fetchAll(PDO::FETCH_ASSOC);
+    if (isset($_GET['katalog']) AND $_GET['katalog'] == 'beletrie') {
+        $sql_count = "SELECT COUNT(*) FROM `cms-content` WHERE `form` = 'beletrie' AND `deleted` = 0";
+        $count = $db->prepare($sql_count);
+        $count->execute();
+        $data_count = $count->fetchAll(PDO::FETCH_ASSOC);
+    } elseif (isset($_GET['katalog']) AND $_GET['katalog'] == 'naucna') { 
+        $sql_count = "SELECT COUNT(*) FROM `cms-content` WHERE `form` = 'naucna' AND `deleted` = 0";
+        $count = $db->prepare($sql_count);
+        $count->execute();
+        $data_count = $count->fetchAll(PDO::FETCH_ASSOC);
+    } else {
+        $sql_count = "SELECT COUNT(*) FROM `cms-content` WHERE `deleted` = 0";
+        $count = $db->prepare($sql_count);
+        $count->execute();
+        $data_count = $count->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+
 
     if (isset($_GET['page'])){
         $page = $_GET['page'] - 1;
@@ -128,11 +138,23 @@ function listAllContent($showAddBookCard){
 
 
 
+    if (isset($_GET['katalog']) AND $_GET['katalog'] == 'beletrie') {
+        $sql = "SELECT * FROM `cms-content` WHERE `form` = 'beletrie' AND `deleted` = 0 LIMIT $page_modified, $cr";
+        $con = $db->prepare($sql);
+        $con->execute();
+        $data = $con->fetchAll(PDO::FETCH_ASSOC);
+    } elseif (isset($_GET['katalog']) AND $_GET['katalog'] == 'naucna') { 
+        $sql = "SELECT * FROM `cms-content` WHERE `form` = 'naucna' AND `deleted` = 0 LIMIT $page_modified, $cr";
+        $con = $db->prepare($sql);
+        $con->execute();
+        $data = $con->fetchAll(PDO::FETCH_ASSOC);
+    } else {
+        $sql = "SELECT * FROM `cms-content` WHERE `deleted` = 0 LIMIT $page_modified, $cr";
+        $con = $db->prepare($sql);
+        $con->execute();
+        $data = $con->fetchAll(PDO::FETCH_ASSOC);
+    }
 
-    $sql = "SELECT * FROM `cms-content` LIMIT $page_modified, $cr";
-    $con = $db->prepare($sql);
-    $con->execute();
-    $data = $con->fetchAll(PDO::FETCH_ASSOC);
 
 
     echo '<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 gx-4 gy-3 container-fluid">';
@@ -165,8 +187,8 @@ function listAllContent($showAddBookCard){
                         <img class='w-auto h-100 object-fit-cover' src='$imgLink' alt='bookcover'>
                     </div>
                     <div class='card-body d-flex flex-column'>
-                        <h2 class='card-title h6 fw-bold mb-1'>$title</h2>
-                        <p class='card-text text-muted small mb-3'>$autor</p>
+                        <h2 class='card-title h6 fw-bold mb-1'> " . htmlspecialchars($title) . "</h2>
+                        <p class='card-text text-muted small mb-3'> " . htmlspecialchars($autor) . "</p>
                         <div class='mt-auto d-flex justify-content-between align-items-center'>";
                             if ($availability <= 0) {echo "<span class='badge text-bg-danger text-white bg-opacity-75'>Nedostupné</span>";} else { echo"<span class='badge text-bg-success text-white bg-opacity-75'> Dostupné ($availability)</span>";}
                             echo "
@@ -194,7 +216,7 @@ $prevDisabled = '';
 if ($page <= 0) {
     $prevDisabled = "disabled";
 }
-$prevPage = max(1, $page - 1);
+$prevPage = max(1, $page - 0);
 echo "
     <li class='page-item $prevDisabled'>
         <a class='page-link' href='?page=$prevPage&cr=$cr' aria-label='Předchozí'>
@@ -211,7 +233,7 @@ for ($i = 1; $i <= $page_count; $i++) {
     }
     echo "
         <li class='page-item $activeClass'>
-            <a class='page-link' href='?page=$i&cr=$cr'>$i</a>
+            <a class='page-link' href='?page=$i&cr=$cr"; if(isset($_GET['katalog'])){ echo '&katalog=' . $_GET['katalog']; } echo "'>$i</a>
         </li>
     ";
 }
@@ -224,7 +246,7 @@ if ($page >= $page_count) {
 $nextPage = min($page_count, $page + 2);
 echo "
     <li class='page-item $nextDisabled'>
-        <a class='page-link' href='?page=$nextPage&cr=$cr' aria-label='Další'>
+        <a class='page-link' href='?page=$nextPage&cr=$cr"; if(isset($_GET['katalog'])){ echo '&katalog=' . $_GET['katalog']; } echo "' aria-label='Další'>
             <span aria-hidden='true'>&raquo;</span>
         </a>
     </li>
@@ -235,7 +257,7 @@ echo "
     </nav>
 
     <!-- Volba počtu položek na stránku -->
-    <form action='" . url('/') . "' method='get' class='d-flex align-items-center gap-2 mb-0'>
+    <form action='"; if(isset($_GET['katalog'])) { echo url("/?$_GET[katalog]"); } else { echo url("/"); } echo "' method='get' class='d-flex align-items-center gap-2 mb-0'>
         <label for='crSelect' class='text-muted small mb-0 text-nowrap'>Zobrazit na stránku:</label>
         <select id='crSelect' name='cr' class='form-select form-select-sm shadow-sm' style='width: auto;' onchange='this.form.submit()'>
             <option value='4' " . ($cr == 4 ? 'selected' : '') . ">4</option>
@@ -318,8 +340,8 @@ function listBorrowedContent($user_id){
                         <img class='w-auto h-100 object-fit-cover' src='$imgLink' alt='bookcover'>
                     </div>
                     <div class='card-body d-flex flex-column'>
-                        <h2 class='card-title h6 fw-bold mb-1'>$title</h2>
-                        <p class='card-text text-muted small mb-3'>$autor</p>
+                        <h2 class='card-title h6 fw-bold mb-1'>" . htmlspecialchars($title) . "</h2>
+                        <p class='card-text text-muted small mb-3'>" . htmlspecialchars($autor) . "</p>
                         <div class='mt-auto d-flex justify-content-between align-items-center'>";
                             if ($date > $dueDate) {
                                 $daysOverdue = $date->diff($dueDate)->days;
@@ -330,7 +352,8 @@ function listBorrowedContent($user_id){
                             echo "
                             <a class='btn btn-outline-dark btn-sm' href='" . url("/detail?id=$id") . "'>Detail</a>
                         </div>
-                        <div class='d-flex justify-content-center align-items-center mt-2'>";
+                        <div class='d-flex justify-content-between align-items-center mt-2'>
+                            <a href='". url("backend/return.php?lost_book_id={$value['content_id']}&id=$ID_cms_user_orders") ."' class='btn btn-outline-dark btn-sm text-bg-danger text-white bg-opacity-75 mr-3'>Ztraceno: " . getLostFine() . "(Cr)</a>";
                             if ($date > $dueDate) {
                                 $daysOverdue = $date->diff($dueDate)->days;
                                 echo '<a href="'. url("backend/return.php?book_id={$value['content_id']}&id=$ID_cms_user_orders") .'" class="btn btn-outline-dark btn-sm text-bg-danger text-white bg-opacity-75 mr-3">Vrátit a doplatit: (' . $daysOverdue * $dayOverPay . ' Cr)</a>';
@@ -378,8 +401,52 @@ function listBorrowedContent($user_id){
                         <img class='w-auto h-100 object-fit-cover' src='$imgLink' alt='bookcover'>
                     </div>
                     <div class='card-body d-flex flex-column'>
-                        <h2 class='card-title h6 fw-bold mb-1'>$title</h2>
-                        <p class='card-text text-muted small mb-3'>$autor</p>
+                        <h2 class='card-title h6 fw-bold mb-1'>" . htmlspecialchars($title) . "</h2>
+                        <p class='card-text text-muted small mb-3'>" . htmlspecialchars($autor) . "</p>
+                        <div class='mt-auto d-flex justify-content-between align-items-center'>
+                            <span class='badge text-bg-secondary text-white mr-3'>Vráceno</span>
+                            <a class='btn btn-outline-dark btn-sm' href='" . url("/detail?id=$id") . "'>Detail</a>
+                        </div>
+                    </div>
+                </div>
+            </div>";
+        }  
+        echo '</div>';
+    }
+    if (count($lost) > 0) {
+        echo "
+        <div class='d-flex justify-content-between align-items-end border-bottom pb-3 mt-5 mb-4'>
+            <div>
+                <h1 class='h3 fw-bold mb-1 text-secondary'>Ztracené</h1>
+            </div>
+        </div>
+        <div class='row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-4 g-4 mb-4'>";
+
+        foreach ($lost as $value) {
+            $createdDate = new DateTime($value['created']);
+            $dueDate = (clone $createdDate)->modify('+' . $borrowDaysLimit .'day');
+            $ID_cms_user_orders = $value['ID_cms-user_orders'];
+
+            $sql = "SELECT * FROM `cms-content` WHERE `ID_cms-content` = :id;";
+            $con = $db->prepare($sql);
+            $con->bindValue(":id", $value['content_id'], PDO::PARAM_STR);
+            $con->execute();   
+            $bookData = $con->fetch(PDO::FETCH_ASSOC);
+
+            $id = $bookData['ID_cms-content'];
+            $title = $bookData['title'];
+            $autor = $bookData['autor'];
+            $imgLink = $bookData['imgLink'];
+           
+            echo "
+            <div class='col'>
+                <div class='card h-100 border-0 shadow-sm rounded-3'>
+                    <div class='bg-secondary bg-opacity-10 d-flex align-items-center justify-content-center text-muted' style='height: 220px;'>
+                        <img class='w-auto h-100 object-fit-cover' src='$imgLink' alt='bookcover'>
+                    </div>
+                    <div class='card-body d-flex flex-column'>
+                        <h2 class='card-title h6 fw-bold mb-1'>" . htmlspecialchars($title) . "</h2>
+                        <p class='card-text text-muted small mb-3'>" . htmlspecialchars($autor) . "</p>
                         <div class='mt-auto d-flex justify-content-between align-items-center'>
                             <span class='badge text-bg-secondary text-white mr-3'>Vráceno</span>
                             <a class='btn btn-outline-dark btn-sm' href='" . url("/detail?id=$id") . "'>Detail</a>

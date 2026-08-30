@@ -76,7 +76,7 @@ function isAdmin($email){
 function isWorker($email){
     global $db;
 
-    $sql = "SELECT role FROM `cms-login` WHERE `email` = :email";
+    $sql = "SELECT `role` FROM `cms-login` WHERE `email` = :email";
     $con = $db->prepare($sql);
     $con->bindValue(":email", $email, PDO::PARAM_STR);
     $con->execute();   
@@ -91,7 +91,7 @@ function isWorker($email){
 
 function searchJsonCreate() {
     global $db;
-    $sql = "SELECT `ID_cms-content`, `title`, `autor` FROM `cms-content`";
+    $sql = "SELECT `ID_cms-content`, `title`, `autor` FROM `cms-content` WHERE `deleted` = 0";
     $con = $db->prepare($sql);
     $con->execute();   
     $data = $con->fetchAll(PDO::FETCH_ASSOC);
@@ -200,6 +200,13 @@ function bookBought($book_id, $email){
     $userInfo = getUserInfo($email);
     $detail = getBookDetail($book_id);
 
+    $userBorrowedCount = getUserBorrowedBookCount($userInfo[0]['ID_login']);
+
+    if ($userBorrowedCount >= getBooksBorrowedLimit()) {
+        header("Location: " . url("/history?TooManyBooks"));
+        exit();
+    }
+
     creditPay($detail[0]['price'], $userInfo[0]['ID_login']);
 
 
@@ -225,13 +232,25 @@ function bookOrder($email, $password, $id) {
     $hash = customHash($password, $email);
     if ($hash == getHash($db, $email)) {
         bookBought($id, $email);  
-        header("Location: " . url("/?boughtSuccessfully")); 
+        header("Location: " . url("/?borrowedSuccessfully")); 
 
     } else {
         header("Location: " . url("/order?title=$id&wrongPass"));
     }   
 
 
+}
+
+function getUserBorrowedBookCount($user_id) {
+    global $db;
+
+    $sql = "SELECT COUNT(*) FROM `cms-user_orders` WHERE `status` = :status AND `user_id` = :id;";
+    $con = $db->prepare($sql);
+    $con->bindValue(":status", 'borrowed', PDO::PARAM_STR);
+    $con->bindValue(":id", $user_id, PDO::PARAM_INT);
+    $con->execute();   
+    $data = $con->fetchAll(PDO::FETCH_ASSOC);
+    return($data[0]['COUNT(*)']);
 }
 
 function getAllBorrowHistory($toList) {
@@ -297,6 +316,50 @@ function getBorrowDayLimit() {
     return($data[0]['setting_value']);
 }
 
+function getBooksBorrowedLimit() {
+    global $db;
+
+    $sql = "SELECT * FROM `cms-settings` WHERE `setting_key` = :key ;";
+    $con = $db->prepare($sql);
+    $con->bindValue(":key", 'books_borrowed_limit', PDO::PARAM_STR);
+    $con->execute();   
+    $data = $con->fetchAll(PDO::FETCH_ASSOC);
+    return($data[0]['setting_value']);
+}
+
+function getLostFine() {
+    global $db;
+
+    $sql = "SELECT * FROM `cms-settings` WHERE `setting_key` = :key ;";
+    $con = $db->prepare($sql);
+    $con->bindValue(":key", 'lost_fine', PDO::PARAM_STR);
+    $con->execute();   
+    $data = $con->fetchAll(PDO::FETCH_ASSOC);
+    return($data[0]['setting_value']);    
+}
+
+function getPageHeading() {
+    global $db;
+
+    $sql = "SELECT * FROM `cms-settings` WHERE `setting_key` = :key ;";
+    $con = $db->prepare($sql);
+    $con->bindValue(":key", 'page_heading', PDO::PARAM_STR);
+    $con->execute();   
+    $data = $con->fetchAll(PDO::FETCH_ASSOC);
+    return($data[0]['setting_value']);      
+}
+
+function getLogo() {
+    global $db;
+
+    $sql = "SELECT * FROM `cms-settings` WHERE `setting_key` = :key ;";
+    $con = $db->prepare($sql);
+    $con->bindValue(":key", 'page_logo', PDO::PARAM_STR);
+    $con->execute();   
+    $data = $con->fetchAll(PDO::FETCH_ASSOC);
+    return($data[0]['setting_value']);      
+}
+
 function changeBorrowStatus($status, $ID_cms_user_order) {
     global $db;
 
@@ -345,6 +408,24 @@ function AddBookAvailability($count, $book_id) {
     $con->execute();
 }
 
+function deleteBook($book_id){
+    global $db;
+
+    $sql ="UPDATE `cms-content` SET `deleted` = 1 WHERE `ID_cms-content` = :id";
+    $con = $db->prepare($sql);
+    $con->bindValue(":id", $book_id, PDO::PARAM_INT);
+    $con->execute();
+}
+
+function addBackBook($book_id){
+    global $db;
+
+    $sql ="UPDATE `cms-content` SET `deleted` = 0 WHERE `ID_cms-content` = :id";
+    $con = $db->prepare($sql);
+    $con->bindValue(":id", $book_id, PDO::PARAM_INT);
+    $con->execute();
+}
+
 function returnBook($book_id, $user_id, $ID_cms_user_order) {
     global $db;
     require_once('../lib/include.php'); 
@@ -365,6 +446,20 @@ function returnBook($book_id, $user_id, $ID_cms_user_order) {
     AddBookAvailability(1, $book_id);
     changeBorrowStatus("returned", $borrowedBookDetail[0]['ID_cms-user_orders']);
 
+}
+
+function lostBook($book_id, $user_id, $ID_cms_user_order){
+    global $db;
+    require_once('../lib/include.php');
+    $borrowedBookDetail = getSpecificBorrowedBookById($ID_cms_user_order);
+
+    $book_owner_id = $borrowedBookDetail[0]['user_id'];
+
+    if ($user_id == $book_owner_id) {
+        creditPay(getLostFine(), $book_owner_id); 
+    }
+
+    changeBorrowStatus("lost", $borrowedBookDetail[0]['ID_cms-user_orders']);
 }
 
 function borrowedBooksCount() {
@@ -441,7 +536,7 @@ function bulkUsersUpdate($role, $credits, $ID_login) {
     $data = $con->fetchAll(PDO::FETCH_ASSOC);
 }
 
-function settingsBulkUpdate($borrowPeriod, $fine) {
+function settingsBulkUpdate($borrowPeriod, $fine, $booksBorrowLimit, $pageHeading, $logo) {
     global $db;
 
     $sql = "UPDATE `cms-settings` SET `setting_value` = :borrowPeriod WHERE `setting_key` = 'borrow_day_limit'";
@@ -453,6 +548,24 @@ function settingsBulkUpdate($borrowPeriod, $fine) {
     $sql = "UPDATE `cms-settings` SET `setting_value` = :fine WHERE `setting_key` = 'fine_per_day'";
     $con = $db->prepare($sql);
     $con->bindValue(":fine", $fine, PDO::PARAM_INT);
+    $con->execute(); 
+    $data = $con->fetchAll(PDO::FETCH_ASSOC);    
+
+    $sql = "UPDATE `cms-settings` SET `setting_value` = :booksBorrowLimit WHERE `setting_key` = 'books_borrowed_limit'";
+    $con = $db->prepare($sql);
+    $con->bindValue(":booksBorrowLimit", $booksBorrowLimit, PDO::PARAM_INT);
+    $con->execute(); 
+    $data = $con->fetchAll(PDO::FETCH_ASSOC);
+    
+    $sql = "UPDATE `cms-settings` SET `setting_value` = :pageHeading WHERE `setting_key` = 'page_heading'";
+    $con = $db->prepare($sql);
+    $con->bindValue(":pageHeading", $pageHeading, PDO::PARAM_STR);
+    $con->execute(); 
+    $data = $con->fetchAll(PDO::FETCH_ASSOC);    
+
+    $sql = "UPDATE `cms-settings` SET `setting_value` = :logo WHERE `setting_key` = 'page_logo'";
+    $con = $db->prepare($sql);
+    $con->bindValue(":logo", $logo, PDO::PARAM_STR);
     $con->execute(); 
     $data = $con->fetchAll(PDO::FETCH_ASSOC);    
 }

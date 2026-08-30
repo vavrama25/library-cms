@@ -9,10 +9,13 @@ if (isset($_COOKIE['PHPSESSID']) AND isset($_SESSION[$_COOKIE['PHPSESSID']]) AND
     exit;
 }
 
-if (isset($_POST['borrowPeriod']) AND isset($_POST['fine'])) {
+if (isset($_POST['borrowPeriod']) AND isset($_POST['fine']) AND isset($_POST['booksBorrowLimit']) AND isset($_POST['pageHeading']) AND isset($_POST['logo'])) {
     $borrowPeriod = $_POST['borrowPeriod'];
     $fine = $_POST['fine'];
-    settingsBulkUpdate($borrowPeriod, $fine);
+    $booksBorrowLimit = $_POST['booksBorrowLimit'];
+    $pageHeading = $_POST['pageHeading'];
+    $logo = $_POST['logo'];
+    settingsBulkUpdate($borrowPeriod, $fine, $booksBorrowLimit, $pageHeading, $logo);
     header("Location: " . url('/admin/settings'));
     exit();
 } else {

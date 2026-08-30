@@ -10,6 +10,19 @@ if (isset($_COOKIE['PHPSESSID']) AND isset($_SESSION[$_COOKIE['PHPSESSID']]) AND
     exit();
 }
 
+if (isset($_GET['delete'])) {
+    deleteBook($_GET['delete']);
+    header("Location: " . url('/admin/books-manager'));
+    exit();
+}
+
+if (isset($_GET['addBack'])) {
+    addBackBook($_GET['addBack']);
+    header("Location: " . url('/admin/books-manager'));
+    exit();
+}
+
+
 if (isset($_GET['add']) && isset($_POST['count'])) {
     AddBookAvailability($_POST['count'], $_GET['add']);
     header("Location: " . url('/admin/books-manager'));
@@ -44,23 +57,23 @@ if (
 
 $allowedForms = ['beletrie', 'naucna'];
 if (!in_array($_POST['forma'], $allowedForms, true)) {
-    header("Location: " . url('/admin/addBook&error=BadSelect'));
+    header("Location: " . url('/admin/addBook?error=BadSelect'));
     exit();
 }
 if (mb_strlen($_POST['bookTitle']) > 100 || mb_strlen($_POST['Autor']) > 100 || mb_strlen($_POST['Description']) > 1000) {
-    header("Location: " . url('/admin/addBook&error=TextTooLong'));
+    header("Location: " . url('/admin/addBook?error=TextTooLong'));
     exit();
 }
 $price = filter_var($_POST['price'], FILTER_VALIDATE_INT);
 if ($price === false || $price < 0 || $price > 999999) {
-    header("Location: " . url('/admin/addBook&error=FalsePrice'));
+    header("Location: " . url('/admin/addBook?error=FalsePrice'));
     exit();
 }
 
 $booksCount = checkDuplicateContant($autor, $bookTitle);
 if (!isset($_GET['edit'])) {
     if ($booksCount > 0) {
-        header("Location: " . url('/admin/addBook&error=BookDuplicate'));
+        header("Location: " . url('/admin/addBook?error=BookDuplicate'));
         exit();
     }
 } else {

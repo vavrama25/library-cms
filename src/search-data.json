@@ -1,27 +1,177 @@
 [
     {
-        "ID_cms-content": 4,
-        "title": "Mein kampf",
-        "autor": "Adolf Hitler"
+        "ID_cms-content": 28,
+        "title": "Duna",
+        "autor": "Frank Herbert"
     },
     {
-        "ID_cms-content": 5,
-        "title": "Bejcek",
-        "autor": "Matej Dufek"
+        "ID_cms-content": 29,
+        "title": "Nadace",
+        "autor": "Isaac Asimov"
     },
     {
-        "ID_cms-content": 6,
-        "title": "Hitlerova nenávist k Židům",
-        "autor": "Reuth, Ralf Georg"
+        "ID_cms-content": 30,
+        "title": "Problém tří těles",
+        "autor": "Liou Cch'-sin"
     },
     {
-        "ID_cms-content": 7,
-        "title": "HOVNO",
-        "autor": "HOnza studnicka"
+        "ID_cms-content": 31,
+        "title": "Marťan",
+        "autor": "Andy Weir"
     },
     {
-        "ID_cms-content": 8,
-        "title": "Všechno při starém",
-        "autor": " Claire Lombardo"
+        "ID_cms-content": 32,
+        "title": "Spasitel",
+        "autor": "Andy Weir"
+    },
+    {
+        "ID_cms-content": 33,
+        "title": "Neuromancer",
+        "autor": "William Gibson"
+    },
+    {
+        "ID_cms-content": 34,
+        "title": "Sní androidi o elektrických ovečkách?",
+        "autor": "Philip K. Dick"
+    },
+    {
+        "ID_cms-content": 35,
+        "title": "Konec dětství",
+        "autor": "Arthur C. Clarke"
+    },
+    {
+        "ID_cms-content": 36,
+        "title": "Setkání s Rámou",
+        "autor": "Arthur C. Clarke"
+    },
+    {
+        "ID_cms-content": 37,
+        "title": "Válka světů",
+        "autor": "H. G. Wells"
+    },
+    {
+        "ID_cms-content": 38,
+        "title": "Stroj času",
+        "autor": "H. G. Wells"
+    },
+    {
+        "ID_cms-content": 39,
+        "title": "Den trifidů",
+        "autor": "John Wyndham"
+    },
+    {
+        "ID_cms-content": 40,
+        "title": "Levá ruka tmy",
+        "autor": "Ursula K. Le Guin"
+    },
+    {
+        "ID_cms-content": 41,
+        "title": "Hyperion",
+        "autor": "Dan Simmons"
+    },
+    {
+        "ID_cms-content": 42,
+        "title": "Stopařův průvodce Galaxií",
+        "autor": "Douglas Adams"
+    },
+    {
+        "ID_cms-content": 43,
+        "title": "Enderova hra",
+        "autor": "Orson Scott Card"
+    },
+    {
+        "ID_cms-content": 44,
+        "title": "Hvězdná pěchota",
+        "autor": "Robert A. Heinlein"
+    },
+    {
+        "ID_cms-content": 45,
+        "title": "Fahrenheit 451",
+        "autor": "Ray Bradbury"
+    },
+    {
+        "ID_cms-content": 46,
+        "title": "Solaris",
+        "autor": "Stanisław Lem"
+    },
+    {
+        "ID_cms-content": 47,
+        "title": "Piknik u cesty",
+        "autor": "Arkadij a Boris Strugačtí"
+    },
+    {
+        "ID_cms-content": 48,
+        "title": "Bohatý táta, chudý táta",
+        "autor": "Robert T. Kiyosaki"
+    },
+    {
+        "ID_cms-content": 49,
+        "title": "Atomové návyky",
+        "autor": "James Clear"
+    },
+    {
+        "ID_cms-content": 50,
+        "title": "Černá labuť",
+        "autor": "Nassim Nicholas Taleb"
+    },
+    {
+        "ID_cms-content": 51,
+        "title": "Krátká historie téměř všeho",
+        "autor": "Bill Bryson"
+    },
+    {
+        "ID_cms-content": 52,
+        "title": "Sobecký gen",
+        "autor": "Richard Dawkins"
+    },
+    {
+        "ID_cms-content": 53,
+        "title": "Proč spíme",
+        "autor": "Matthew Walker"
+    },
+    {
+        "ID_cms-content": 54,
+        "title": "Jak získávat přátele a působit na lidi",
+        "autor": "Dale Carnegie"
+    },
+    {
+        "ID_cms-content": 55,
+        "title": "Tělo sčítá rány",
+        "autor": "Bessel van der Kolk"
+    },
+    {
+        "ID_cms-content": 56,
+        "title": "Ticho",
+        "autor": "Susan Cain"
+    },
+    {
+        "ID_cms-content": 57,
+        "title": "Vladař",
+        "autor": "Niccolò Machiavelli"
+    },
+    {
+        "ID_cms-content": 58,
+        "title": "Umění války",
+        "autor": "Sun-c'"
+    },
+    {
+        "ID_cms-content": 59,
+        "title": "Guns, Germs, and Steel",
+        "autor": "Jared Diamond"
+    },
+    {
+        "ID_cms-content": 60,
+        "title": "Slepá skvrna",
+        "autor": "Daniel Prokop"
+    },
+    {
+        "ID_cms-content": 61,
+        "title": "Životice: Obraz (po)zapomenuté tragédie",
+        "autor": "Karin Lednická"
+    },
+    {
+        "ID_cms-content": 62,
+        "title": "Krev, pot a pixely",
+        "autor": "Jason Schreier"
     }
 ]

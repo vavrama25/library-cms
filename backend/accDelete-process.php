@@ -4,9 +4,8 @@ session_start();
 
 global $db;
 loginCheck();
-checkInactivity();
 
-if (isset($_POST['password']) AND !empty($_POST['password'])) {
+if (isset($_POST['password']) && $_POST['password'] !== '') {
     $email = $_SESSION['user'];
     $password = $_POST['password'];
 
@@ -16,12 +15,12 @@ if (isset($_POST['password']) AND !empty($_POST['password'])) {
         #zadal spravne mazeme acc  
         deleteAcc($db, $email);
         session_destroy();
-        header("Location: ../index.php?delWasSuccessful");        
+        header("Location: " . url('/?delWasSuccessful'));        
     } else {
         #zadal spatne 
-        header("Location: ../public/acc-delete.php?delNotSuccessful");
+        header("Location: " . ('/accDelete?delNotSuccessful'));
     }
 } else {
-    header("Location: ../public/acc-delete.php");
+    header("Location: " . url("/accDelete"));
 }
 ?>

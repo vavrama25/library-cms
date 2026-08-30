@@ -7,6 +7,7 @@ if (isset($_GET['id']) AND !empty($_GET['id'])) {
     $detail = getBookDetail($id);
 } else {
     header("Location: " . url('CMS/'));
+    exit();
 } 
 
 ?>

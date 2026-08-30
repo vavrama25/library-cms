@@ -139,8 +139,10 @@ if (isset($_COOKIE['PHPSESSID']) AND isset($_SESSION[$_COOKIE['PHPSESSID']]) AND
                 <?php 
                     if (isset($_GET['filter'])) {
                         $filter = $_GET['filter'];
-                        listAllBorrowedContent($filter, $userSearch, $bookSearch);
+                    } else {
+                        $filter = 'returned';
                     }
+                    listAllBorrowedContent($filter, $userSearch, $bookSearch);
                ?>
             </div>
         </div>

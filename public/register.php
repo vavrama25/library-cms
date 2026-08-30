@@ -55,9 +55,6 @@ session_start();
                             Register Account
                         </button>
                         <hr>
-                        <a href="index.html" class="btn btn-google btn-user btn-block">
-                            <i class="fab fa-google fa-fw"></i> Register with Google
-                        </a>
                     </form>
                     <hr>
                     <div class="text-center">
@@ -73,7 +70,7 @@ session_start();
                             echo "<p class='mt-5 text fs-3 text-bg-danger rounded-4'>Passwords are not matching</p>";
                         }
                         if (isset($_GET['emailNotVerified'])) {
-                            echo "<p class='mt-5 text fs-3 text-bg-danger rounded-4'>There is a mistake in yor email</p>";
+                            echo "<p class='mt-5 text fs-3 text-bg-danger rounded-4'>There is a mistake in your email</p>";
                         }
                         if (isset($_GET['PasswordTooWeak'])) {
                             echo "<p class='mt-5 text fs-3 text-bg-danger rounded-4'>A password must contain at least 12 characters, a number and one special character</p>";

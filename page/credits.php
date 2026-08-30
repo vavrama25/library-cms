@@ -7,6 +7,7 @@ if (isset($_COOKIE['PHPSESSID']) AND isset($_SESSION[$_COOKIE['PHPSESSID']]) AND
     $user = $_SESSION['user'];
 } else {
     header("Location: " . url('/login'));
+    exit();
 }
 
 $userInfo = getUserInfo($user);

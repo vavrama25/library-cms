@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
     let libraryData = [];
 
-    // Základní pozicování pro dropdown
     if (suggestionsList && searchInput) {
         const parentDiv = searchInput.parentElement;
         if (parentDiv) parentDiv.style.position = 'relative';
@@ -26,7 +25,6 @@ document.addEventListener('DOMContentLoaded', () => {
         suggestionsList.style.display = 'none';
     }
 
-    // Načtení JSON souboru
     async function loadData() {
         try {
             const response = await fetch('src/search-data.json');
