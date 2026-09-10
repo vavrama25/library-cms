@@ -41,7 +41,7 @@ if (isset($_GET['action']) AND $_GET['action'] == 'edit') {
             }
             
         }
-    if ($_SESSION['user'] == getUserInfoById($ID_login)[0]['email']) {
+    if ($_SESSION['user'] == getUserInfoById($ID_login)[0]['email'] and $role !== "admin") {
         header("Location: " . url("/admin/readers"));
         exit;
     }
