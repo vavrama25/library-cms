@@ -143,6 +143,17 @@ sudo systemctl reload nginx
 - **Zabezpečený přenos:** Web komunikuje šifrovaně přes HTTPS s platnými certifikáty.
 
 ---
+---
+
+## ⚖️ Licence a Omezení odpovědnosti (Disclaimer)
+
+Tento software je poskytován pod licencí [MIT](LICENSE).
+
+### Omezení odpovědnosti:
+Tento software je poskytován „tak, jak je“ (*AS IS*), bez záruky jakéhokoli druhu, výslovné nebo předpokládané, včetně, ale nikoli výhradně, záruk prodejnosti, vhodnosti pro konkrétní účel a neporušení práv. 
+
+V žádném případě autor nenese odpovědnost za jakékoli nároky, škody, ztrátu dat, bezpečnostní incidenty nebo jiné závazky vzniklé v důsledku používání, úprav či nasazení tohoto softwaru. Veškeré nasazení do produkčního prostředí a správa uživatelských dat je výhradně na vlastní riziko uživatele/správce.
+
 
 ## 👤 Autor
 
