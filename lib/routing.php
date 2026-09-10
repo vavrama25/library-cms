@@ -1,6 +1,6 @@
 <?php
 
-define('BASE_URL', '/martin/CMS/');
+define('BASE_URL', '/');
 
 function url($path) {
     $path = ltrim($path, '/');

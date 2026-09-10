@@ -1,6 +1,6 @@
 <?php
 session_start();
-include_once("lib/include.php");
+include_once("../lib/include.php");
 global $db;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
@@ -61,9 +61,9 @@ if (!isset($_GET['token']) AND !isset($_GET['submit'])) {
         } 
          
 
-            require 'PHPMailer/src/Exception.php';
-            require 'PHPMailer/src/PHPMailer.php';
-            require 'PHPMailer/src/SMTP.php';
+            require '../PHPMailer/src/Exception.php';
+            require '../PHPMailer/src/PHPMailer.php';
+            require '../PHPMailer/src/SMTP.php';
 
             $mail = new PHPMailer(true);
 

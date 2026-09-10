@@ -37,7 +37,7 @@ function sidebarRendrer($active) {
 
             <!-- Nav Item - Borrowed -->
             <li class="nav-item '; if($active == "borrowed") {echo 'active';} echo ' ">
-                <a class="nav-link" href="' . url("/admin/borrowed") . '">
+                <a class="nav-link" href="' . url("/admin/borrowed?filter=borrowed") . '">
                     <i class="fas fa-fw fa-table"></i>
                     <span>Borrowed</span></a>
             </li>
@@ -651,7 +651,7 @@ function listAllBorrowedContent($toList, $userSearch, $bookSearch){
                 <h1 class='h3 fw-bold mb-1'>Momentálně vypůjčené</h1>
             </div>
         </div>
-        <div class='row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-4 g-4 mb-4'>";
+        <div class='row'>";
 
         foreach ($borrowed as $value) {
             $createdDate = new DateTime($value['created']);
@@ -672,7 +672,7 @@ function listAllBorrowedContent($toList, $userSearch, $bookSearch){
             $userEmail = getUserInfoById($value['user_id'])[0]['email'];
 
             echo "
-            <div class='col'>
+            <div class='col-auto mb-4'>
                 <div class='card h-100 border-0 shadow-sm rounded-3'>
                     <div class='bg-secondary bg-opacity-10 d-flex align-items-center justify-content-center text-muted' style='height: 220px;'>
                         <img class='w-auto h-100 object-fit-cover' src='$imgLink' alt='bookcover'>
@@ -687,21 +687,28 @@ function listAllBorrowedContent($toList, $userSearch, $bookSearch){
                             } else { 
                                 echo "<span class='badge text-bg-success text-white bg-opacity-75 mr-3'>Vrátit do: " . $dueDate->format('d.m.Y') . " </span>";
                             }
-                            echo "
-                            <a class='btn btn-outline-dark btn-sm' href='" . url("/detail?id=$id") . "'>Detail</a>
+                            echo '
+                            <a class="btn btn-outline-dark btn-sm" href="' . url("/detail?id=$id") . '">Detail</a>
                         </div>
-                        <div class='mt-2 d-flex justify-content-between align-items-center'>
-                            <span class='badge text-bg-info text-gray-800 bg-opacity-75'> User: " . htmlspecialchars($userEmail) . "</span>
-                        ";
-                        echo "<div>
-                            <a href='". url("backend/return.php?lost_book_id={$value['content_id']}&id=$ID_cms_user_orders") ."' class='btn btn-outline-dark btn-sm text-bg-danger text-white bg-opacity-75 mr-3'>Ztraceno</a>";
-
-                            if ($date > $dueDate) {
-                                $daysOverdue = $date->diff($dueDate)->days;
-                                echo '<a href="'. url("backend/return.php?book_id={$value['content_id']}&id=$ID_cms_user_orders") .'" class="btn btn-outline-dark btn-sm text-bg-danger text-white bg-opacity-75 ">Vrátit a doplatit: (' . $daysOverdue * $dayOverPay . ' Cr)</a>';
-                            } else { 
-                                echo '<a href="' . url("backend/return.php?book_id={$value['content_id']}&id=$ID_cms_user_orders") .'" class="btn btn-outline-dark btn-sm text-bg-success text-white bg-opacity-75 ">Vrátit</a>';
-                            }
+			<div class="mt-3 pt-2 border-top">
+    				<div class="mb-2">
+				        <span class="badge badge-info text-truncate w-100 py-1">
+				            User: ' .  htmlspecialchars($userEmail) . '
+				        </span>
+				</div>
+				<div class="row no-gutters">	
+				        <div class="col-6 pr-1">
+				            <a href="' .  url('/admin/order-action?action=lost&id=' . $order['ID_cms-user_orders'])  . '" class="btn btn-danger btn-sm btn-block">
+				                Ztraceno
+				            </a>
+			        </div>
+			        <div class="col-6 pl-1">
+			            <a href="' .  url('/admin/order-action?action=return&id=' . $order['ID_cms-user_orders']) . '" class="btn btn-success btn-sm btn-block">
+			                Vrátit
+			            </a>
+			        </div>
+			</div>
+		</div>';
             echo " 
 
                         </div>
