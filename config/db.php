@@ -1,13 +1,5 @@
 <?php
-/* SKOLA
-	define('DB_NAME', 'vavrama25');
-	define('DB_USER', 'vavrama25');
-	define('DB_PASSWORD', 'Ff83zmQt');
-	define('DB_HOST', '127.0.0.1');
-*/
-/*LOCAL
 
-*/
 	define('DB_NAME', 'cms-martin');
 	define('DB_USER', 'admin');
 	define('DB_PASSWORD', '443322');
