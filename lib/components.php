@@ -113,28 +113,41 @@ function listAllContent($showAddBookCard){
     }
 
 
+ 
+$validCr = [4, 8, 16];
+$cr = 4;
 
-    if (isset($_GET['page'])){
-        $page = $_GET['page'] - 1;
-    } else {
-        $page = 0;
-    }
+if (isset($_GET['cr']) && in_array((int)$_GET['cr'], $validCr, true)) {
+    $cr = (int)$_GET['cr'];
+}
 
-    $validCr = [4, 8, 16];
-
-    if (isset($_GET['cr']) AND in_array($_GET[('cr')], $validCr)) {
-        $cr = $_GET['cr'];
-        $page_modified = $page * $cr;
-    } else {
-        $cr = 4;
-        $page_modified = $page * $cr;
-    }
-
-    foreach ($data_count as $key => $value) {
-        foreach ($value as $key => $value) {
-            $page_count = ceil($value/$cr);
+$total_rows = 0;
+if (!empty($data_count)) {
+    foreach ($data_count as $row) {
+        foreach ($row as $val) {
+            $total_rows = (int)$val;
         }
     }
+}
+$page_count = max(1, (int)ceil($total_rows / $cr));
+
+
+$page = 1; 
+
+if (isset($_GET['page']) && is_numeric($_GET['page'])) {
+    $requested_page = (int)$_GET['page'];
+
+    if ($requested_page < 1) {
+        $page = 1; 
+    } elseif ($requested_page > $page_count) {
+        $page = $page_count; 
+    } else {
+        $page = $requested_page;
+    }
+}
+
+
+$page_modified = ($page - 1) * $cr;
 
 
 
@@ -216,7 +229,7 @@ $prevDisabled = '';
 if ($page <= 0) {
     $prevDisabled = "disabled";
 }
-$prevPage = max(1, $page - 0);
+$prevPage = max(1, $page - 1);
 echo "
     <li class='page-item $prevDisabled'>
         <a class='page-link' href='?page=$prevPage&cr=$cr' aria-label='Předchozí'>
@@ -228,7 +241,7 @@ echo "
 
 for ($i = 1; $i <= $page_count; $i++) {
     $activeClass = '';
-    if ($page == ($i - 1)) {
+    if ($page == ($i)) {
         $activeClass = "active";
     }
     echo "
@@ -243,7 +256,7 @@ $nextDisabled = '';
 if ($page >= $page_count) {
     $nextDisabled = 'disabled';
 }
-$nextPage = min($page_count, $page + 2);
+$nextPage = min($page_count, $page + 1);
 echo "
     <li class='page-item $nextDisabled'>
         <a class='page-link' href='?page=$nextPage&cr=$cr"; if(isset($_GET['katalog'])){ echo '&katalog=' . $_GET['katalog']; } echo "' aria-label='Další'>

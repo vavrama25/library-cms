@@ -1,7 +1,7 @@
 <?php
 function emailPrefill(){
-    if (isset($_SESSION['email'])) {
-        echo "value='$_SESSION[email]'";
+    if (isset($_SESSION['user'])) {
+        echo $_SESSION['user'];
     }
 }
 
