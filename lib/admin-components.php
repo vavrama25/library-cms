@@ -691,8 +691,6 @@ function listAllBorrowedContent($toList, $userSearch, $bookSearch){
 		</div>';
             echo " 
 
-                        </div>
-                        </div>
                     </div>
                 </div>
             </div>";
@@ -707,7 +705,7 @@ function listAllBorrowedContent($toList, $userSearch, $bookSearch){
                 <h1 class='h3 fw-bold mb-1 text-secondary'>Vrácené</h1>
             </div>
         </div>
-        <div class='row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-4 g-4 mb-4'>";
+        <div class='row'>";
 
         foreach ($returned as $value) {
             $createdDate = new DateTime($value['created']);
@@ -728,8 +726,8 @@ function listAllBorrowedContent($toList, $userSearch, $bookSearch){
             $userEmail = getUserInfoById($value['user_id'])[0]['email'];
 
             echo "
-            <div class='col'>
-                <div class='card h-100 border-0 shadow-sm rounded-3'>
+            <div class='col-auto mb-4'>
+                <div class='card h-100 border-0 shadow-sm rounded-3' style='width: 240px;'>
                     <div class='bg-secondary bg-opacity-10 d-flex align-items-center justify-content-center text-muted' style='height: 220px;'>
                         <img class='w-auto h-100 object-fit-cover' src='$imgLink' alt='bookcover'>
                     </div>
@@ -741,7 +739,7 @@ function listAllBorrowedContent($toList, $userSearch, $bookSearch){
                             <a class='btn btn-outline-dark btn-sm' href='" . url("/detail?id=$id") . "'>Detail</a>
                         </div>
                         <div class='mt-2 d-flex justify-content-between align-items-center'>
-                            <span class='badge text-bg-info text-gray-800 bg-opacity-75'> User: " . htmlspecialchars($userEmail) . "</span>
+                            <span class='w-100 badge text-bg-info text-gray-800 bg-opacity-75'> User: " . htmlspecialchars($userEmail) . "</span>
                         </div>    
                     </div>
                 </div>
@@ -757,7 +755,7 @@ function listAllBorrowedContent($toList, $userSearch, $bookSearch){
                 <h1 class='h3 fw-bold mb-1 text-secondary'>Ztracené</h1>
             </div>
         </div>
-        <div class='row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-4 g-4 mb-4'>";
+        <div class='row'>";
 
         foreach ($lost as $value) {
             $createdDate = new DateTime($value['created']);
@@ -778,8 +776,8 @@ function listAllBorrowedContent($toList, $userSearch, $bookSearch){
             $userEmail = getUserInfoById($value['user_id'])[0]['email'];
 
             echo "
-            <div class='col'>
-                <div class='card h-100 border-0 shadow-sm rounded-3'>
+            <div class='col-auto mb-4'>
+                <div class='card h-100 border-0 shadow-sm rounded-3' style='width: 240px'>
                     <div class='bg-secondary bg-opacity-10 d-flex align-items-center justify-content-center text-muted' style='height: 220px;'>
                         <img class='w-auto h-100 object-fit-cover' src='$imgLink' alt='bookcover'>
                     </div>
