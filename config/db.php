@@ -2,7 +2,7 @@
 
 	define('DB_NAME', 'cms-martin');
 	define('DB_USER', 'admin');
-	define('DB_PASSWORD', '443322');
+	define('DB_PASSWORD', '');
 	define('DB_HOST', '127.0.0.1');
 	global $db;
 
