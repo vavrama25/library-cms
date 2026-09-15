@@ -49,8 +49,8 @@ function publicPageHeader() {
                             Katalog
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0">
-                            <li><a class="dropdown-item" href="?katalog=beletrie'; if(isset($_GET['cr'])){ echo '&cr=' . $_GET['cr']; } echo '">Beletrie</a></li>
-                            <li><a class="dropdown-item" href="?katalog=naucna'; if(isset($_GET['cr'])){ echo '&cr=' . $_GET['cr']; } echo '">Naučná literatura</a></li>
+                            <li><a class="dropdown-item" href="' . url('/?katalog=beletrie') . '"'; if(isset($_GET['cr'])){ echo '&cr=' . $_GET['cr']; } echo '">Beletrie</a></li>
+                            <li><a class="dropdown-item" href="' . url('/?katalog=naucna') . '"'; if(isset($_GET['cr'])){ echo '&cr=' . $_GET['cr']; } echo '">Naučná literatura</a></li>
                         </ul>
                     </li>
                     <!-- Účet / Login -->
