@@ -118,14 +118,12 @@ function topbarRender($user) {
 
 function addBookCard() {
      echo '   
-        <div class="col">
+        <div class="col-auto mb-4" style="min-width: 390px;">
             <a href="' . url('/admin/addBook') . '" class="text-decoration-none text-dark d-block h-100">
                 <div class="card h-100 border-0 shadow-sm rounded-3 text-center border-dashed">
-                    <!-- Šedý blok o stejné výšce 220px jako u knihy s velkým plus -->
                     <div class="bg-secondary bg-opacity-10 d-flex align-items-center justify-content-center text-muted" style="height: 220px;">
                         <i class="fas fa-plus fa-3x text-primary"></i>
                     </div>
-                    <!-- Tělo karty se stejným odsazením -->
                     <div class="card-body d-flex flex-column justify-content-center align-items-center">
                         <h2 class="card-title h6 fw-bold mb-1 text-primary">Přidat novou knihu</h2>
                         <p class="card-text text-muted small mb-0">Kliknutím vytvoříte nový záznam v katalogu</p>
@@ -268,7 +266,7 @@ function listAllContentAdmin($showAddBookCard){
                     </div>
                 </div>
         ";
-        echo '<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 container-fluid">';
+        echo '<div class="row ml-4">';
         if ($showAddBookCard) {
             addBookCard();
         }
@@ -294,7 +292,7 @@ function listAllContentAdmin($showAddBookCard){
             }
                 
                 echo "
-                        <div class='col'>
+                        <div class='col-auto mb-4'>
                             <div class='card h-100 border-0 shadow-sm rounded-3'>
                                 <div class='bg-secondary bg-opacity-10 d-flex align-items-center justify-content-center text-muted' style='height: 220px;'>
                                     <img class='w-auto h-100 object-fit-cover' style='max-width: 80%;' src='$imgLink' alt='bookcover'>
