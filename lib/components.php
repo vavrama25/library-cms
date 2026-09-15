@@ -197,7 +197,7 @@ $page_modified = ($page - 1) * $cr;
         }
     echo "    <div class='card h-100 border-0 shadow-sm rounded-3'>
                     <div class='bg-secondary bg-opacity-10 d-flex align-items-center justify-content-center text-muted' style='height: 220px;'>
-                        <img class='w-auto h-100 object-fit-cover' src='$imgLink' alt='bookcover'>
+                        <img class='w-auto h-100 object-fit-cover' style='max-width: 80%;' src='$imgLink' alt='bookcover'>
                     </div>
                     <div class='card-body d-flex flex-column'>
                         <h2 class='card-title h6 fw-bold mb-1'> " . htmlspecialchars($title) . "</h2>
