@@ -73,7 +73,7 @@ if (!isset($_GET['token']) AND !isset($_GET['submit'])) {
                 $mail->Host       = 'smtp.gmail.com';                        // Gmail SMTP server
                 $mail->SMTPAuth   = true;                                    // Enable SMTP authentication
                 $mail->Username   = 'martin.letsencrypt@gmail.com';           // Your Gmail address
-                $mail->Password   = 'ivhwxehtzfqktiet';                      // Your 16-character App Password (NO SPACES)
+                $mail->Password   = '';                      // Your 16-character App Password (NO SPACES)
                 $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;          // Required encryption
                 $mail->Port       = 587;                                     // Port for TLS
 
